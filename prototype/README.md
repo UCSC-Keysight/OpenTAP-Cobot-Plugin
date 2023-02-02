@@ -24,8 +24,15 @@ Critical points:
 ## Implementation
 drafting...
 
+## Whats Next?
+
+- Additional software integration testing needs to be conducted to identify any compatibility issues or inconsistencies in functionality. This will require a closer examination of URScript, it's hardware and any network limitations / vulnerabilities related to OpenTAP. 
+- We need to draft a design that'll leverage ROS2 middleware so the system can potentially extrapolate to other cobots.
+- We need to draft a design for the plugin's OpenTAP GUI interface that can be later scaled to any cobot.  
+
 ## Final Remarks
 
-- The response message sent back from the controller appears to be a formatted byte string that has been serialized. I have been unable to identify an internal UR application protocol interface for deserializing the response which likely contains data related to the sate of the cobot. This could be valauble for future implementations to improve fault tolerance. 
+- The response message sent back from the controller appears to be a formatted byte string that has been serialized. I have been unable to identify an internal UR application protocol interface for deserializing the response which likely contains data related to the sate of the cobot. This could be valuable for future implementations to improve fault tolerance. 
 
 [^1]: URScript is a proprietary language developed by Universal Robots designed to run on their cobot's onboard controller. URScript provides a high-level interface for implementing algorithms as well as controlling the robot's movements, inputs, and outputs. The languages specifications and application protocol interface are documented in the e-series [script manual](https://s3-eu-west-1.amazonaws.com/ur-support-site/115824/scriptManual_SW5.11.pdf). 
+
