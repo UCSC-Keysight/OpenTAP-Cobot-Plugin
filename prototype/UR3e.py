@@ -14,12 +14,13 @@ class UR3e(Instrument):
     @method(Double)
     def send_request_movement(self):
 
-        HOST = "10.0.0.133"
+        HOST = self.IpAddress
         PORT = 30002
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
             client_socket.settimeout(4)
 
+            self.log.Info("Connecting with {}:P{".format(self.IpAddress, PORT))
             try:
                 client_socket.connect((HOST, PORT))
             except socket.timeout as e:
