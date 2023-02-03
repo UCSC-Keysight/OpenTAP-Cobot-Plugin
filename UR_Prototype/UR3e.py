@@ -25,13 +25,16 @@ class UR3e(Instrument):
                 client_socket.connect((HOST, PORT))
             except socket.timeout as e:
                 self.log.Error("Timeout error: {}".format(e))
+                return False
             except socket.error as e:
                 self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
+                return False
 
             try:
                 client_socket.sendall(b"movej([0, 0, 0, 0, 0, 0], a=1.2, v=1.05)\n")
             except socket.error as e:
                 self.log.Error("Sendall failed. Error: {}".format(e))
+                return False
 
             response = client_socket.recv(1024)
 
@@ -44,7 +47,7 @@ class UR3e(Instrument):
             client_socket.close()
             return True
         else:
-            self.log.Error("Sendall failed. Error: {}".format(e))
+            self.log.Error("No response message received.")
             client_socket.close()
             return False
 
