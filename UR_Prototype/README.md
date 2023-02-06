@@ -6,7 +6,7 @@
 
 - This file provides a technical overview for an OpenTAP plugin prototype used to control a Universal Robot (UR) cobot, model UR3e.
 - The primary purpose of this plugin is to demonstrate fundamental software integration aspects; namely, communication between OpenTAP software and Universal Robot's software interface, PolyScope.
-- This plugin explores a transmission control protocol (TCP) socket method for establishing a communication layer.
+- This plugin explores a transmission control protocol (TCP) socket method for establishing a transportation layer used as a client interface.
 
 ## Usage
 
