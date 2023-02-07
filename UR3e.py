@@ -10,9 +10,14 @@ class UR3e(Instrument):
     def __init__(self):
         super(UR3e, self).__init__()
         self.Name = "UR3e"
-         
+
+    # DESCRIPTION:    Opens socket, connects to cobot, sends request message with URScript payload,
+    #                 receives response message then closes socket.
+    # PRE-CONDITION:  Argv `command` must be a single line of URScript code that ends with `\n`.
+    # POST-CONDITION: Moves cobot to location specified by `command`; afterwards, receives cobot
+    #                 response.
     @method(Double)
-    def send_request_movement(self):
+    def send_request_movement(self, command):
 
         HOST = self.IpAddress
         PORT = 30002
@@ -29,9 +34,10 @@ class UR3e(Instrument):
             except socket.error as e:
                 self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
                 return False
-
             try:
-                client_socket.sendall(b"movej([0, 0, 0, 0, 0, 0], a=1.2, v=1.05)\n")
+                self.log.Debug(command)
+                command += '\n'
+                client_socket.sendall(command.encode())
             except socket.error as e:
                 self.log.Error("Sendall failed. Error: {}".format(e))
                 return False
@@ -39,8 +45,8 @@ class UR3e(Instrument):
             response = client_socket.recv(1024)
 
         if response:
-            # Not sure how to deserialize response
-            # Nothing in documentation about its encoding
+            # Not sure how to deserialize response.
+            # Nothing in documentation about its encoding.
             # https://forum.universal-robots.com/t/how-do-i-deserialize-response-messages-from-the-controller/26537
             self.log.Info(f"Client received: {response!r}")
             self.log.Warning("This response is serialized.")
