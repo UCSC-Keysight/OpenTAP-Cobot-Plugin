@@ -1,38 +1,60 @@
-<img src="https://user-images.githubusercontent.com/80125540/211405062-43230a2a-3bdf-41a4-92a3-a0f597187d7b.jpg" align="right">
+# OpenTAP-Cobot-Plugin
 
-# OpenTAP_UR_plugin_prototype.md<p></p>
+#### Overview
 
-## Overview
-
-- This file provides a technical overview for an OpenTAP plugin prototype used to control a Universal Robot (UR) cobot, model UR3e.
-- The primary purpose of this plugin is to demonstrate fundamental software integration aspects; namely, communication between OpenTAP software and Universal Robot's software interface, PolyScope.
-- This plugin explores a transmission control protocol (TCP) socket method for establishing a transportation layer used as a client interface.
+- This file provides technical documentation related to UCSC-Keysight's software development project that seeks to create OpenTAP plugins to control Universal Robots' UR3e cobot.
 
 ## Usage
 
-<kbd>![prototype_plugin1](https://user-images.githubusercontent.com/80125540/216204712-dafe7ea6-66d4-4154-8ee4-50a126fe13d2.gif)</kbd>
+The following demonstration controls the cobot with OpenTAP using Keysight's Pathwave editor. The cobot moves to the specified location using the test step's URScript field at the execution of the test plan.
 
-## Design
+<kbd>![demonstration1](https://user-images.githubusercontent.com/80125540/217394032-08fd0b76-ed92-4a0b-8130-967558308db0.gif)</kbd>
 
-Critical points:
-  - Prototype uses OpenTAP's [class heirarchy](https://doc.opentap.io/Developer%20Guide/Development%20Essentials/#opentap-plugin-object-hierarchy) to instantiate a UR3e instrument object. 
-  - A test step object is used to invoke the UR3e instrument object's `send_request_movement()` function.
-  - The `send_request_movement()` function establishes TCP client socket connection between OpenTAP and the UR3e's PolyScope.
-  - The `send_request_movement()` function sends a request message whose payload contains a URScript[^1] command to move the robot. 
-  - The UR3e simulator then sends a response message, presumably an acknowledgment, in what appears to be a serialized format.
- 
-## Implementation
-drafting...
+## Setup
 
-## Whats Next?
+### Requirements
 
-- Additional software integration testing needs to be conducted to identify any compatibility issues or inconsistencies in functionality. This will require a closer examination of URScript, it's hardware and any network limitations / vulnerabilities related to OpenTAP. 
-- We need to draft a design that'll leverage ROS2 middleware so the system can potentially extrapolate to other cobots.
-- We need to draft a design for the plugin's OpenTAP GUI interface that can be later scaled to any cobot.  
+- [Python3](https://www.python.org/downloads/)
+- [OpenTAP](https://opentap.io/downloads)
+- [Git](https://git-scm.com/downloads)
+- [UR Simulator](https://gist.github.com/Shawn-Armstrong/bbb2615abd917efc958c7fce714b0d46#ur-simulator-setup)
 
-## Final Remarks
+### Instructions
 
-- The response message sent back from the controller appears to be a formatted byte string that has been serialized. I have been unable to identify an internal UR application protocol interface for deserializing the response which likely contains data related to the sate of the cobot. This could be valuable for future implementations to improve fault tolerance. 
+1. Start the UR simulator, create a UR3e instance then activate the cobot.
 
-[^1]: URScript is a proprietary language developed by Universal Robots designed to run on their cobot's onboard controller. URScript provides a high-level interface for implementing algorithms as well as controlling the robot's movements, inputs, and outputs. The languages specifications and application protocol interface are documented in the e-series [script manual](https://s3-eu-west-1.amazonaws.com/ur-support-site/115824/scriptManual_SW5.11.pdf). 
+   <kbd>![setup1](https://user-images.githubusercontent.com/80125540/217388958-6d24335a-eda0-4a0d-95fa-1f553773d3dc.gif)</kbd>
+
+2. [Download](https://opentap.io/downloads) and install OpenTAP for your system.
+3. Open a commandline, navigate to the installed `../OpenTap` root directory then run the following commands:
+
+   ```Console
+   tap package install "Editor CE"
+   tap package install Python
+   tap package install SDK
+   ```
+
+4. Navigate to `../OpenTap/Packages` then clone the repository.
+   ```Console
+   git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git
+   ```
+5. Navigate back to the `../OpenTap` root directory then open the editor with the following command:
+
+   ```Console
+   tap editor
+   ```
+
+6. Setup and configure the test plan within the GUI with the following actions:
+   
+   <kbd>![setup2](https://user-images.githubusercontent.com/80125540/217393507-60ff4c8d-f3f6-4d1b-ad6c-fcbdd60e667c.gif)</kbd>
+   
+## Technical Details
+
+### OpenTAP Infrastructure
+
+OpenTAP implements an object hierarchy that plays a critical role in their software architecture.
+  
+<kbd>![hierarchy](https://doc.opentap.io/assets/img/ObjectHierarchy.0307a24d.png)</kbd>
+
+The primary purpose of the hierarchy is to enforce modularization that'll encapsulate logic categorically which is used to control, manage and separate responsibilities within their software.  
 
