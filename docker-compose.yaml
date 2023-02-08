@@ -1,0 +1,30 @@
+version:
+  "3"
+services:
+  urHandler:
+    image: "ucsc-keysight/urhandler:x86_64"
+    ports:
+      - 6080:6080
+      - 5900:5900
+    restart: unless-stopped
+    networks:
+      ursim_net:
+        ipv4_address: 192.168.56.101 
+        
+  openTapController:
+    image: "ucsc-keysight/opentap:x86_64"
+    #network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - urHandler
+    networks:
+      - ursim_net
+
+networks:
+  ursim_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.56.0/24
+          gateway: 192.168.56.1
