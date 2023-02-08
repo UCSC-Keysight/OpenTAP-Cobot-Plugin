@@ -3,6 +3,7 @@
 1. simply ./runall.sh
 
 This builds all necessary dependencies and sets up the containers through the docker-compose.yaml which will take a few minutes.
+ - *For now the computer architecture must be x86_64 as docker expects that tag when building the image in compose.*
 
 Once complete an interactive shell should open with access to the OpenTap container.
  - To access the editor run the command: tap tui
