@@ -85,12 +85,23 @@ The prototype only uses an instrument named `URe3` and a test step `MoveCobot`.
 - Sends requests to URe3 internal server.
 - Receives response back from URe3 internal server.
 
-## Bugs
+# Current Design and Future Direction
 
-- `send_request_movement()` prompts safety conflict.
-- Successive `MoveCobot` test steps interrupt each other.
-- Response message is serialized.
+A lot of thought was put into finding the optimal way to design a GUI that'll allow the end-user to manipulate the URe3 in an intuitive manner that can be later scaled to an arbitrary cobot. My conclusion was an overly simple solution; make a dynamic test step that accepts input. 
 
-## To-Do
-- [ ] Resolve serialized response issue.
-- [ ] [Resolve UR ROS2 driver simultator network issue.](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/issues/588)
+<kbd>![image](https://user-images.githubusercontent.com/80125540/217410675-b7370e49-0ba8-470c-b2d3-453cba271497.png)</kbd>
+
+This design conforms to OpenTAPs infrastructure; that is, a test step performs a single action and can be versatile. A practical test plan might looks something like this:
+
+<kbd>![image](https://user-images.githubusercontent.com/80125540/217411520-a6c13f95-d2f9-4447-9a94-734318302fd5.png)</kbd>
+
+Furthermore, I believe this will scale well. We can add a cobot field then use OpenTap's `Display` module to hide / expose certain fields based on the cobot field.
+
+
+## Bugs / Project Concerns
+
+- [`send_request_movement()` prompts safety conflict.](https://user-images.githubusercontent.com/80125540/217407574-28cf2437-9097-4cba-8775-604fce77fcfb.gif)
+- [Response is serialized.](https://user-images.githubusercontent.com/80125540/217407909-2838d182-68f7-482d-81b1-037fc5f79d53.png)
+- [UR ROS2 Driver's simulator fails.](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/issues/588)
+
+
