@@ -3,6 +3,8 @@
 ### Overview
 
 - This file provides technical documentation related to UCSC-Keysight's software development project that seeks to create OpenTAP plugins to control Universal Robots' _(UR)_ cobot model UR3e.
+- These plugins are loosely being designed to potentially extend to other cobots in the future.
+- The immediate purpose of these plugins will tenatively be used in 6G testing as described [here](https://gist.github.com/Shawn-Armstrong/8018e24419fa095ff15e1e2458042c8a).
 
 ## Usage
 
