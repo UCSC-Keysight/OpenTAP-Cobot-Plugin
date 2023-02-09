@@ -4,7 +4,7 @@ from System.Xml.Serialization import XmlIgnore
 import System.Xml
 from System import Array, Double, Byte, Int32, String, Boolean
 import System
-from OpenTap import Log, DisplayAttribute, Display, Output, Unit, OutputAttribute, UnitAttribute, AvailableValues, EnabledIfAttribute
+from OpenTap import Log, DisplayAttribute, Display, Output, Unit, OutputAttribute, UnitAttribute, AvailableValues, EnabledIfAttribute, FilePath, FilePathAttribute
 import math
 from opentap import *
 from System.Collections.Generic import List
@@ -21,6 +21,11 @@ class MoveCobot(TestStep):
             "Instrument", "The instrument to use in the step.", "Resources"))
     Command = property(String, "movej([0, 0, 0, 0, 0, 0], a=1.2, v=1.05)")\
         .add_attribute(Display("Command", "This move command gets sent to the UR Cobot", "UR Script", -1, True))
+    Command2 = property(String, "")\
+        .add_attribute(FilePath(FilePathAttribute.BehaviorChoice.Open, ".txt"))\
+        .add_attribute(Display("File", "Gets file contents and sends it to the UR Cobot", "UR Script", -1, True))
+        
+    
 
     def __init__(self):
         super(MoveCobot, self).__init__()
@@ -32,7 +37,8 @@ class MoveCobot(TestStep):
         super().Run()
 
         # This sends the command to UR3e Instrument abstraction.
-        response_received = self.UR3e_cobot.send_request_movement(self.Command)
+        # response_received = self.UR3e_cobot.send_request_movement(self.Command)
+        response_received = self.UR3e_cobot.send_request_movement(self.Command2)
 
         if response_received == True:
             self.log.Info("URScript received by cobot controller.\n")

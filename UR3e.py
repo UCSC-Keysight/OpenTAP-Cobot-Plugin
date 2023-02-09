@@ -35,9 +35,14 @@ class UR3e(Instrument):
                 self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
                 return False
             try:
+                # self.log.Debug(command)
+                # command += '\n'
+                # client_socket.sendall(command.encode())
                 self.log.Debug(command)
-                command += '\n'
-                client_socket.sendall(command.encode())
+                f = open(command, "r")
+                temp = f.read()
+                temp += '\n'
+                client_socket.sendall(temp.encode())                
             except socket.error as e:
                 self.log.Error("Sendall failed. Error: {}".format(e))
                 return False
