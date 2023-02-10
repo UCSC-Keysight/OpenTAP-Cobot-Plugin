@@ -43,6 +43,8 @@ class UR3e(Instrument):
                 allCommands = f.readlines()
                 for curCommand in allCommands:
                     curCommand + '\n'
+                    # DynamicStepTest.ITestStep(property(String, curCommand)\
+                    #     .add_attribute(Display("Command", "This move command gets sent to the UR Cobot", "UR Script", -1, True)))
                     self.log.Info(f"Sending command {curCommand!r}")
                     client_socket.sendall(curCommand.encode())
                     response = client_socket.recv(1024)    
