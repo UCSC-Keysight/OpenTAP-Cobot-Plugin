@@ -1,7 +1,9 @@
 """
 Dynamic Test Step in Python
 """
+
 from System import Type, String
+from System.Xml.Serialization import *
 from opentap import *
 import OpenTap
 from OpenTap import ITestStep, TestStep, IDynamicStep, DisplayAttribute
@@ -19,7 +21,7 @@ class DynamicTestStepPython(TestStep, IDynamicStep):
     
     @method(Type)
     def GetStepFactoryType(self):
-        return Type.GetType("DynamicTestStepPython")
+        return self.GetType()
     
     @method(ITestStep)
     def GetStep(self):
