@@ -30,25 +30,23 @@ The following demonstration controls the cobot with OpenTAP using Keysight's Pat
    <kbd>![setup1](https://user-images.githubusercontent.com/80125540/217388958-6d24335a-eda0-4a0d-95fa-1f553773d3dc.gif)</kbd>
 
 2. [Download](https://opentap.io/downloads) and install OpenTAP for your system.
-3. Open a command line, navigate to the installed `../OpenTap` root directory then run the following commands:
+3. Perform the following version control actions:
 
-   ```Console
-   tap package install "Editor CE"
-   tap package install Python
-   tap package install SDK
-   ```
-
-4. Navigate to `../OpenTap/Packages` then clone the repository.
    ```Console
    git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git
-   ```
-5. Navigate back to the `../OpenTap` root directory then open the editor with the following command:
-
-   ```Console
-   tap editor
+   cd OpenTAP-Cobot-Plugin
+   git fetch origin
+   git checkout -b fix/refactor-project origin/fix/refactor-project
    ```
 
-6. Setup and configure the test plan within the GUI with the following actions:
+4. Perform the following build procedures:
+
+   ````Console
+   dotnet build
+   bin\tap.exe editor
+   ````
+
+5. Setup and configure the test plan within the GUI with the following actions:
    
    <kbd>![setup2](https://user-images.githubusercontent.com/80125540/217393507-60ff4c8d-f3f6-4d1b-ad6c-fcbdd60e667c.gif)</kbd>
    
