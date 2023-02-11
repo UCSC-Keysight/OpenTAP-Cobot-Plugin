@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<InstrumentSettings type="OpenTap.InstrumentSettings">
+  <UR3e type="UR_Prototype.UR3e.UR3e" Source="">
+    <IpAddress>10.0.0.133</IpAddress>
+    <Name>UR3e</Name>
+  </UR3e>
+  <Package.Dependencies>
+    <Package Name="OpenTAP" Version="^9.19.4+7959a308" />
+  </Package.Dependencies>
+</InstrumentSettings>

@@ -1,0 +1,6 @@
+UR_Prototype.Api/obj/
+UR_Prototype/__pycache__/
+Dependencies/
+Packages/
+*.TapPackage
+bin/SessionLogs/*.txt
