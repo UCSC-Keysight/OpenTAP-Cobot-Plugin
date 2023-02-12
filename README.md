@@ -69,27 +69,27 @@ The primary purpose of the hierarchy is to enforce modularization that'll encaps
 
 ### Prototype Implementation
 
-The prototype only uses an instrument named `URe3` and a test step `MoveCobot`.
+The prototype only uses an instrument named `UR3e` and a test step `MoveCobot`.
 
-#### `URe3`
+#### `UR3e`
 - A tool responsible for performing a conditioning action to the DUT; namely, modifying its location via the cobot arm. 
 - Object strictly encapsulates logic related to this responsibility.
   - Implements `send_move_request()` which is used to modify the state of the cobot given an **arbitrary** move command. 
   - Implements logic used to display it's information on the GUI.
   
 #### `MoveCobot`
-- Instantiates a `URe3` object
+- Instantiates a `UR3e` object
 - Implements logic used to collect URScript input from the end-user stored in `command`.
-- Invokes the `URe3` function `send_move_request(command)`
+- Invokes the `UR3e` function `send_move_request(command)`
 
 #### `send_request_movement()`
 - Creates a TCP socket connection.
-- Sends requests to URe3 internal server.
-- Receives response back from URe3 internal server.
+- Sends requests to UR3e internal server.
+- Receives response back from UR3e internal server.
 
 # Current Design and Future Direction
 
-A lot of thought was put into finding the optimal way to design a GUI that'll allow the end-user to manipulate the URe3 in an intuitive manner that can be later scaled to an arbitrary cobot. My conclusion was an overly simple solution; make a dynamic test step that accepts input. 
+A lot of thought was put into finding the optimal way to design a GUI that'll allow the end-user to manipulate the UR3e in an intuitive manner that can be later scaled to an arbitrary cobot. My conclusion was an overly simple solution; make a dynamic test step that accepts input. 
 
 <kbd>![image](https://user-images.githubusercontent.com/80125540/217410675-b7370e49-0ba8-470c-b2d3-453cba271497.png)</kbd>
 
