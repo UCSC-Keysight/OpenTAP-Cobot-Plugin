@@ -4,7 +4,7 @@
 
 - This file provides technical documentation related to UCSC-Keysight's software development project that seeks to create OpenTAP plugins to control Universal Robots' _(UR)_ cobot model UR3e.
 - These plugins are loosely being designed to potentially extend to other cobots in the future.
-- The immediate purpose of these plugins will tenatively be used in 6G testing as described [here](https://gist.github.com/Shawn-Armstrong/8018e24419fa095ff15e1e2458042c8a).
+- The immediate purpose of these plugins will tentatively be used in 6G testing as described [here](https://gist.github.com/Shawn-Armstrong/8018e24419fa095ff15e1e2458042c8a).
 
 ## Usage
 
@@ -30,7 +30,7 @@ The following demonstration controls the cobot with OpenTAP using Keysight's Pat
    <kbd>![setup1](https://user-images.githubusercontent.com/80125540/217388958-6d24335a-eda0-4a0d-95fa-1f553773d3dc.gif)</kbd>
 
 2. [Download](https://opentap.io/downloads) and install OpenTAP for your system.
-3. Perform the following version control actions:
+3. Perform the following version control actions within a new directory on your Desktop.
 
    ```Console
    git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git
@@ -39,7 +39,7 @@ The following demonstration controls the cobot with OpenTAP using Keysight's Pat
    git checkout -b fix/refactor-project origin/fix/refactor-project
    ```
 
-4. Perform the following build procedures:
+4. Perform the following build procedure inside the new directory:
 
    ````Console
    dotnet build
@@ -49,6 +49,14 @@ The following demonstration controls the cobot with OpenTAP using Keysight's Pat
 5. Setup and configure the test plan within the GUI with the following actions:
    
    <kbd>![setup2](https://user-images.githubusercontent.com/80125540/217393507-60ff4c8d-f3f6-4d1b-ad6c-fcbdd60e667c.gif)</kbd>
+
+### Package Deployment
+This plugin can be compressed into a package after setup, if desired, with the following steps:
+  
+```
+bin\tap.exe package create 
+./package.xml
+```
    
 ## Technical Details
 
@@ -85,23 +93,9 @@ The prototype only uses an instrument named `URe3` and a test step `MoveCobot`.
 - Sends requests to URe3 internal server.
 - Receives response back from URe3 internal server.
 
-# Current Design and Future Direction
-
-A lot of thought was put into finding the optimal way to design a GUI that'll allow the end-user to manipulate the URe3 in an intuitive manner that can be later scaled to an arbitrary cobot. My conclusion was an overly simple solution; make a dynamic test step that accepts input. 
-
-<kbd>![image](https://user-images.githubusercontent.com/80125540/217410675-b7370e49-0ba8-470c-b2d3-453cba271497.png)</kbd>
-
-This design conforms to OpenTAPs infrastructure; that is, a test step performs a single action and can be versatile. A practical test plan might looks something like this:
-
-<kbd>![image](https://user-images.githubusercontent.com/80125540/217411520-a6c13f95-d2f9-4447-9a94-734318302fd5.png)</kbd>
-
-Furthermore, I believe this will scale well. We can add a cobot field then use OpenTap's `Display` module to hide / expose certain fields based on the cobot field.
-
-
 ## Bugs / Project Concerns
 
-- [`send_request_movement()` prompts safety conflict.](https://user-images.githubusercontent.com/80125540/217407574-28cf2437-9097-4cba-8775-604fce77fcfb.gif)
-- [Response is serialized.](https://user-images.githubusercontent.com/80125540/217407909-2838d182-68f7-482d-81b1-037fc5f79d53.png)
-- [UR ROS2 Driver's simulator fails.](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/issues/588)
-
-
+- [ ] [`send_request_movement()` prompts safety conflict.](https://user-images.githubusercontent.com/80125540/217407574-28cf2437-9097-4cba-8775-604fce77fcfb.gif)
+- [ ] [Response is serialized.](https://user-images.githubusercontent.com/80125540/217407909-2838d182-68f7-482d-81b1-037fc5f79d53.png)
+- [X] [UR ROS2 Driver's simulator fails.](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/issues/588)
+- [ ] Optimize `bin` directory so that build generated files do not clutter tree object during version control commits. 
