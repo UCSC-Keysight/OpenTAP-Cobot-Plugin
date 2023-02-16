@@ -35,31 +35,26 @@ class UR3e(Instrument):
                 self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
                 return False
             try:
-                # self.log.Debug(command)
-                # command += '\n'25615
-                # client_socket.sendall(command.encode())
                 self.log.Debug(FilePath)
+                #Open and parse file
                 f = open(FilePath, "r")
                 allCommands = f.readlines()
                 for curCommand in allCommands:
                     curCommand + '\n'
-                    # DynamicStepTest.ITestStep(property(String, curCommand)\
-                    #     .add_attribute(Display("Command", "This move command gets sent to the UR Cobot", "UR Script", -1, True)))
                     self.log.Info(f"Sending command {curCommand!r}")
                     client_socket.sendall(curCommand.encode())
                     response = client_socket.recv(1024)    
-                    self.log.Info(f"Client received: {response!r}")            
+                    self.log.Info(f"Client received: {response!r}")      
+
             except socket.error as e:
                 self.log.Error("Sendall failed. Error: {}".format(e))
                 return False
 
-            #response = client_socket.recv(1024)
-            #request = client_socket.read_coils(1,1)
         if response:
             # Not sure how to deserialize response.
             # Nothing in documentation about its encoding.
             # https://forum.universal-robots.com/t/how-do-i-deserialize-response-messages-from-the-controller/26537
-            #self.log.Info(f"Client received: {response!r}")
+
             self.log.Warning("This response is serialized.")
             client_socket.close()
             return True

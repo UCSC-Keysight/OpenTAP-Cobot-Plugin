@@ -19,6 +19,7 @@ clr.AddReference("System.Collections")
 class CommandCobot(TestStep):
     UR3e_cobot = property(UR3e, None).\
         add_attribute(OpenTap.Display("Cobot", "Resources"))
+    #FilePath will grab the location of the chosen .txt file. 
     FilePath = property(String, "")\
         .add_attribute(FilePath(FilePathAttribute.BehaviorChoice.Open, ".txt"))\
         .add_attribute(Display("File Path", "Gets File Path filled with UR commands", "UR Script", -1, True))
@@ -30,9 +31,8 @@ class CommandCobot(TestStep):
     # This is what is executed when you press "Run Test Plan" on GUI. 
     def Run(self):
         super().Run()
-        # Command = property(String, self.FilePath)\
-        #     .add_attribute(Display("Command", "This command gets sent to the UR Cobot", "UR Script", -1, True))
-        # This sends the command to UR3e Instrument abstraction.
+        
+        #Sends and records response from UR Bot
         response_received = self.UR3e_cobot.send_request_movement(self.FilePath)
 
         if response_received == True:
