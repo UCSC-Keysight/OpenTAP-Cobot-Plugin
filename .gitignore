@@ -1,4 +1,4 @@
 UR_Prototype.Api/obj/
 UR_Prototype/__pycache__/
 *.TapPackage
-bin/SessionLogs/
+bin/
