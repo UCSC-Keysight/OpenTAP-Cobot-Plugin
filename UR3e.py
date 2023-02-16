@@ -36,7 +36,7 @@ class UR3e(Instrument):
                 return False
             try:
                 # self.log.Debug(command)
-                # command += '\n'
+                # command += '\n'25615
                 # client_socket.sendall(command.encode())
                 self.log.Debug(FilePath)
                 f = open(FilePath, "r")
