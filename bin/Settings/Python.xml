@@ -18,5 +18,7 @@
   </SearchPathList>
   <Debug>false</Debug>
   <DebugPort>5678</DebugPort>
-  <Package.Dependencies />
+  <Package.Dependencies>
+    <Package Name="OpenTAP" Version="^9.19.4+7959a308" />
+  </Package.Dependencies>
 </PythonSettings>

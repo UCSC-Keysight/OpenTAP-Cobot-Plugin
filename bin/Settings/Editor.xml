@@ -18,5 +18,8 @@
   <AutoAttachDebugger>false</AutoAttachDebugger>
   <FocusMode>false</FocusMode>
   <FocusModeDontAskMeAgain>false</FocusModeDontAskMeAgain>
-  <Package.Dependencies />
+  <Package.Dependencies>
+    <Package Name="WPF Controls" Version="^9.17.4+5e508f08" />
+    <Package Name="OpenTAP" Version="^9.19.4+7959a308" />
+  </Package.Dependencies>
 </EditorSettings>
