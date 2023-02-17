@@ -35,15 +35,13 @@ The following demonstration controls the cobot with OpenTAP using Keysight's Pat
    ```Console
    git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git
    cd OpenTAP-Cobot-Plugin
-   git fetch origin
-   git checkout -b fix/refactor-project origin/fix/refactor-project
    ```
 
 4. Perform the following build procedure inside the new directory:
 
    ````Console
    dotnet build
-   bin\tap.exe editor
+   bin\tap editor
    ````
 
 5. Setup and configure the test plan within the GUI with the following actions:
@@ -54,8 +52,7 @@ The following demonstration controls the cobot with OpenTAP using Keysight's Pat
 This plugin can be compressed into a package after setup, if desired, with the following steps:
   
 ```
-bin\tap.exe package create 
-./package.xml
+bin\tap package create ./package.xml
 ```
    
 ## Technical Details
@@ -98,4 +95,4 @@ The prototype only uses an instrument named `URe3` and a test step `MoveCobot`.
 - [ ] [`send_request_movement()` prompts safety conflict.](https://user-images.githubusercontent.com/80125540/217407574-28cf2437-9097-4cba-8775-604fce77fcfb.gif)
 - [ ] [Response is serialized.](https://user-images.githubusercontent.com/80125540/217407909-2838d182-68f7-482d-81b1-037fc5f79d53.png)
 - [X] [UR ROS2 Driver's simulator fails.](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/issues/588)
-- [ ] Optimize `bin` directory so that build generated files do not clutter tree object during version control commits. 
+- [X] Optimize `bin` directory so that build generated files do not clutter tree object during version control commits. 
