@@ -33,8 +33,8 @@ jobs:
       - name: Install plugin and requirements
         run: |
              pushd ./bin
-             ./tap package install -v ../*.TapPackage
              ./tap python install-requirements -v
+             ./tap package install -v ../*.TapPackage
              popd
       - name: Upload binaries
         uses: actions/upload-artifact@v3
