@@ -6,6 +6,8 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <RootNamespace>Python.Test.CSharpApi</RootNamespace>
+        <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+
     </PropertyGroup>
     
     <ItemGroup>
@@ -14,16 +16,15 @@
         <AdditionalOpenTapPackage Include="PythonExamples" Version="3.0" />
         
         <!-- Uncomment one of these lines to get a test plan editor installed when you build. -->
-        <PropertyGroup>
-          <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
-        </PropertyGroup>
-        <PropertyGroup Condition="'$(IsWindows)'=='true'">
-          <OpenTapPackageReference Include="Editor CE"/>
-        </PropertyGroup>
+
         
         <!-- <OpenTapPackageReference Include="Editor CE"/> Not available for linux. Add conditional to include editor if you are on windows else don't. -->
         <!-- <OpenTapPackageReference Include="EditorX"/> -->
         <!-- <OpenTapPackageReference Include="TUI"/> -->
+    </ItemGroup>
+    
+    <ItemGroup Condition="'$(IsWindows)'=='true'">
+        <OpenTapPackageReference Include="Editor CE"/>
     </ItemGroup>
     
     <ItemGroup>
