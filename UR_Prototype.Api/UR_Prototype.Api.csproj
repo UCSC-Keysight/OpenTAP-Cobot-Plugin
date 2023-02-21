@@ -14,7 +14,10 @@
         <AdditionalOpenTapPackage Include="PythonExamples" Version="3.0" />
         
         <!-- Uncomment one of these lines to get a test plan editor installed when you build. -->
-        <!-- <OpenTapPackageReference Include="Editor CE"/> -->
+        <Content Condition=" '$(OS)' == 'Windows_NT' ">
+          <OpenTapPackageReference Include="Editor CE"/>
+        </Content>
+        <!-- <OpenTapPackageReference Include="Editor CE"/> Not available for linux. Add conditional to include editor if you are on windows else don't. -->
         <!-- <OpenTapPackageReference Include="EditorX"/> -->
         <!-- <OpenTapPackageReference Include="TUI"/> -->
     </ItemGroup>
