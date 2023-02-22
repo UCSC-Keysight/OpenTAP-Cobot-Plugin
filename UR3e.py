@@ -41,10 +41,11 @@ class UR3e(Instrument):
                 register_value = curCommand.encode()
                 result = client.write_register(address=register_address, value=register_value, unit=0)
                 if result.isError():
-                    #self.log.Error("Error writing register: {}".format(result))
-                    print(curCommand + " command not received")
+                    self.log.Error("Error writing register: {}".format(result))
+                    #print(curCommand + " command not received")
                     return False
                 else:
+                    self.log.Info(f"Received Command")
                     print(curCommand + " received command ")
                 # Wait for the cobot to process the command
                 time.sleep(0.1)
