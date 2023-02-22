@@ -1,5 +1,5 @@
 # OpenTAP-Cobot-Plugin
-
+# Specify the requirement for dotnet release command.
 ### Overview
 
 - This file provides technical documentation related to UCSC-Keysight's software development project that seeks to create OpenTAP plugins to control Universal Robots' _(UR)_ cobot model UR3e.
@@ -72,6 +72,13 @@ The primary purpose of the hierarchy is to enforce modularization that'll encaps
 2. The **`Instrument`** class encapsulates logic that strictly relates to a physical tool. In general, this logic would implement some functionality that seeks to condition, expose or otherwise measure a parameter related to the DUT.
 3. The **`TestStep`** class is the fundamental unit of work; essentially, it is used to tie everything together. OpenTAPs best practices recommend that it performs a single step
 4. The **`ResultListener`** class is used to arbitrate the collection and management of data produced by test steps.
+
+### CI Pipeline Instructions
+
+The CI commands are written in the build.yaml file in the .github/workflow directory. To test those commands locally, you have to run 
+"dotnet build -c Release" before running any other build scripts. That helps in the building the bin folder which contains the tap executable
+along with supporting files configured for your running OS. The current CI script only tests whether the entire package is built. Unit tests
+for seperate functionalites are yet to be written.
 
 ### Prototype Implementation
 
