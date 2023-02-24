@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestPlan type="OpenTap.TestPlan">
+  <Steps>
+    <TestStep type="UR3e.MoveCobot.MoveCobot" Id="706af533-64fe-4bc9-96dd-9c03dc3c79f8">
+      <UR3e_cobot Source="OpenTap.InstrumentSettings">UR3e</UR3e_cobot>
+      <Command>movej([0, 0, 0, 0, 0, 0], a=1.2, v=1.05)</Command>
+      <Name Metadata="Step Name">Move Cobot</Name>
+    </TestStep>
+  </Steps>
+  <Package.Dependencies>
+    <Package Name="OpenTAP" Version="^9.19.5+6210d651" />
+  </Package.Dependencies>
+</TestPlan>
