@@ -2,7 +2,7 @@ version:
   "3"
 services:
   urHandler:
-    image: "ucsc-keysight/urhandler:x86_64"
+    image: "ucsc-keysight/urhandler:latest"
     ports:
       - 6080:6080
       - 5900:5900
@@ -12,7 +12,7 @@ services:
         ipv4_address: 192.168.56.101 
         
   openTapController:
-    image: "ucsc-keysight/opentap:x86_64"
+    image: "ucsc-keysight/opentap:latest"
     #network_mode: host
     restart: unless-stopped
     depends_on:

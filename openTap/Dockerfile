@@ -1,7 +1,11 @@
 FROM opentapio/opentap:9.19.5-bionic-slim
 
+ARG OUTPUT
+ARG FILES
+ARG GUI
+
 RUN echo "Creating working directory..."
-WORKDIR /opt/tap
+WORKDIR /environment/
 COPY ./openTapPlugin /opt/tap/Packages/UR3e/
 
 RUN echo "Installing necessary dependencies..."
@@ -12,5 +16,10 @@ RUN apt-get update && apt-get install -y \
 RUN echo "Installing OpenTAP packages..."
 RUN tap package install TUI
 RUN tap package install Python
+
+RUN echo "Optional Flags..."
+COPY ./.resources/* /environment/testPlans/
+COPY ./scripts/* /environment/scripts/
+
 CMD ["/bin/bash"]
 
