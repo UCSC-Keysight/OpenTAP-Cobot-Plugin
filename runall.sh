@@ -1,5 +1,6 @@
 #!/bin/bash
 
+interactive_shell_set=''
 dir_set=''
 dir=''
 file_set=''
@@ -18,11 +19,12 @@ get_abs_filename() {
 }
 
 #Read Flags
-while getopts 'd:go:f:' flag; do
+while getopts 'igo:d:f:' flag; do
   case "${flag}" in
-    d) dir=$(get_abs_filename "${OPTARG}") && dir_set='true' ;;
+    i) interactive_shell_set='true' ;;
     g) gui_set='true' ;;
     o) output="${OPTARG}" && output_set='true' ;;
+    d) dir=$(get_abs_filename "${OPTARG}") && dir_set='true' ;;
     f) files=("$OPTARG") && file_set='true'
         until [[ $(eval "echo \${$OPTIND}") =~ ^-.* ]] || [ -z $(eval "echo \${$OPTIND}") ]; do
                 files+=($(eval "echo \${$OPTIND}"))
@@ -104,6 +106,17 @@ build='docker build -t ucsc-keysight/urhandler:latest . > /dev/null'
 eval "$build"
 
 echo 'Running Containers...'
+
+if [ "$gui_set" ];
+then
+    cd .. && docker-compose up --rm openTapController
+fi
+
+if [ "$interactive_shell_set" ];
+then
+    cd .. && docker-compose run --rm openTapController /bin/bash
+fi
+
 if [ "$file_set" ] || [ "$dir_set" ];
 then
     cd .. && docker-compose run --rm openTapController ./scripts/runTestPlans.sh

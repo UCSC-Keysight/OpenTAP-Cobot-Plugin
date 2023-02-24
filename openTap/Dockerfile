@@ -18,7 +18,8 @@ RUN tap package install TUI
 RUN tap package install Python
 
 RUN echo "Optional Flags..."
-COPY ./.resources/* /environment/testPlans/
+COPY ./.resources/*.TapPlan /environment/testPlans/
+COPY ./.resources/Settings/* /opt/tap/Settings/Bench/Default/
 COPY ./scripts/* /environment/scripts/
 
 CMD ["/bin/bash"]

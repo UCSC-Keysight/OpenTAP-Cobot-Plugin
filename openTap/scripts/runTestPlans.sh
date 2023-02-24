@@ -12,6 +12,15 @@ else
     exit 1
 fi
 
+while true; do
+    read -p "Do you wish to run the above files? [y/n] " yn
+    case $yn in
+        [Yy]* ) break;;
+        [Nn]* ) exit 0;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+
 for file in *.TapPlan
 do
     echo "Running $file ($counter/$sumFiles)"
