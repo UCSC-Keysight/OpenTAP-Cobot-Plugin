@@ -5,7 +5,7 @@ import socket
 
 @attribute(OpenTap.Display("UR3e", "UR3e driver.", "UR_Prototype"))
 class UR3e(Instrument):
-    IpAddress = property(String, "10.0.0.133")\
+    IpAddress = property(String, "192.168.56.101")\
         .add_attribute(OpenTap.Display("IP Address", "The static IP address of the UR3e cobot."))
     def __init__(self):
         super(UR3e, self).__init__()
