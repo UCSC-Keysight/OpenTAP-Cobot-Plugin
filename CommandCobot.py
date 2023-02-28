@@ -19,8 +19,8 @@ clr.AddReference("System.Collections")
 class CommandCobot(TestStep):
     UR3e_cobot = property(UR3e, None).\
         add_attribute(OpenTap.Display("Cobot", "Resources"))
-    #FilePath will grab the location of the chosen .txt file. 
-    FilePath = property(String, "")\
+    #file_path will grab the location of the chosen .txt file. 
+    file_path = property(String, "")\
         .add_attribute(FilePath(FilePathAttribute.BehaviorChoice.Open, ".txt"))\
         .add_attribute(Display("File Path", "Gets File Path filled with UR commands", "UR Script", -1, True))
 
@@ -33,7 +33,7 @@ class CommandCobot(TestStep):
         super().Run()
         
         #Sends and records response from UR Bot
-        response_received = self.UR3e_cobot.send_request_movement(self.FilePath)
+        response_received = self.UR3e_cobot.send_request_movement(self.file_path)
 
         if response_received == True:
             self.log.Info("URScript received by cobot controller.\n")
