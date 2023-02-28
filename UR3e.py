@@ -46,7 +46,7 @@ class UR3e(Instrument):
                     return False
                 else:
                     self.log.Info(f"Received Command")
-                    print(curCommand + " received command ")
+                    #print(curCommand + " received command ")
                 # Wait for the cobot to process the command
                 time.sleep(0.1)
                 # Read the response from the cobot using Modbus function code 3 (read holding registers)

@@ -1,3 +1,5 @@
 numpy
 debugpy
 socket
+pymodbus
+pymodbus.client
