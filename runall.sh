@@ -109,12 +109,14 @@ echo 'Running Containers...'
 
 if [ "$gui_set" ];
 then
-    cd .. && docker-compose up --rm openTapController
+    cd ..
+    docker-compose up -d urHandler
+    docker run --shm-size=256m -it -p 5902:5902 -e VNC_PASSWD=keysight -e LM_LICENSE_FILE=@10.211.55.4 ucsc-keysight/opentap:latest /opt/container_startup.sh
 fi
 
 if [ "$interactive_shell_set" ];
 then
-    cd .. && docker-compose run --rm openTapController /bin/bash
+    cd .. && docker-compose run --rm -e LM_LICENSE_FILE=@10.211.55.4 openTapController /bin/bash
 fi
 
 if [ "$file_set" ] || [ "$dir_set" ];

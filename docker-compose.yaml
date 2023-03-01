@@ -15,10 +15,13 @@ services:
     image: "ucsc-keysight/opentap:latest"
     #network_mode: host
     restart: unless-stopped
+    mac_address: 00:1c:42:8a:53:9b
     depends_on:
       - urHandler
     networks:
       - ursim_net
+    
+    
 
 networks:
   ursim_net:
