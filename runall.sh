@@ -1,5 +1,5 @@
 #!/bin/bash
-
+license_server='192.168.0.170'
 interactive_shell_set=''
 dir_set=''
 dir=''
@@ -19,8 +19,9 @@ get_abs_filename() {
 }
 
 #Read Flags
-while getopts 'igo:d:f:' flag; do
+while getopts 'igl:o:d:f:' flag; do
   case "${flag}" in
+    l) license_server="$OPTARG" ;;
     i) interactive_shell_set='true' ;;
     g) gui_set='true' ;;
     o) output="${OPTARG}" && output_set='true' ;;
@@ -111,12 +112,30 @@ if [ "$gui_set" ];
 then
     cd ..
     docker-compose up -d urHandler
-    docker run --shm-size=256m -it -p 5902:5902 -e VNC_PASSWD=keysight -e LM_LICENSE_FILE=@10.211.55.4 ucsc-keysight/opentap:latest /opt/container_startup.sh
+    id=$(docker run -d --shm-size=256m -it -p 5902:5902 -p 30002:30002 -e VNC_PASSWD=keysight -e LM_LICENSE_FILE=@$license_server ucsc-keysight/opentap:latest /opt/container_startup.sh)
+    docker network connect opentap-cobot-plugin_ursim_net "$id"
+    printf "\n\n"
+    echo "------- NoVNC Services have started -----------"
+    echo ""
+    echo "  --> OpenTAP GUI Services: http://localhost:5902/?password=keysight"
+    echo ""
+    echo "  --> UR3e GUI Services: http://localhost:6080/vnc_auto.html"
+    echo ""
+    echo "  Containers now running in the background..."
+    echo "-----------------------------------------------"
+    ( trap exit SIGINT ; read -r -d '' _ </dev/tty ) ## wait for Ctrl-C
+    printf "\n"
+    echo "Removing OpenTAP Container @ $id..."
+    docker stop $id
+    echo "Removing Compose Network..."
+    docker-compose down
+    exit 0
+
 fi
 
 if [ "$interactive_shell_set" ];
 then
-    cd .. && docker-compose run --rm -e LM_LICENSE_FILE=@10.211.55.4 openTapController /bin/bash
+    cd .. && docker-compose run --rm -e LM_LICENSE_FILE=@$license_server openTapController /bin/bash
 fi
 
 if [ "$file_set" ] || [ "$dir_set" ];

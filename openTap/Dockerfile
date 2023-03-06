@@ -45,7 +45,8 @@ RUN apt-get install -y \
     python-numpy \
     fluxbox \
     libnss3 \
-    libgbm1 
+    libgbm1 \
+    libgtk-3-0
 RUN useradd -m -s /bin/bash keysight
 RUN echo keysight:keysight | chpasswd
 RUN usermod -a -G sudo keysight
