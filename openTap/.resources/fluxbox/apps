@@ -1,0 +1,10 @@
+[startup]   {tap editorx}
+[app] (name=fbrun)
+  [Position]    (WINCENTER)    {0 0}
+  [Layer]    {2}
+[end]
+
+[app] (name=keysight)
+  [Position]   (WINCENTER)    {0 0}
+  [Layer]    {2}
+[end]

@@ -34,13 +34,29 @@ EXPOSE 5901
 RUN git clone --branch v1.2.0 --single-branch https://github.com/novnc/noVNC.git /opt/noVNC
 RUN git clone --branch v0.9.0 --single-branch https://github.com/novnc/websockify.git /opt/noVNC/utils/websockify
 RUN ln -s /opt/noVNC/vnc.html /opt/noVNC/index.html
-RUN apt-get install -y novnc python3-websockify tigervnc-standalone-server x11vnc xvfb net-tools python python-numpy fluxbox
+RUN apt-get install -y \
+    novnc \
+    python3-websockify \
+    tigervnc-standalone-server \
+    x11vnc \
+    xvfb \
+    net-tools \
+    python \
+    python-numpy \
+    fluxbox \
+    libnss3 \
+    libgbm1 
 RUN useradd -m -s /bin/bash keysight
 RUN echo keysight:keysight | chpasswd
 RUN usermod -a -G sudo keysight
 USER root
 
-COPY --chown=keysight:users container_startup.sh /opt/container_startup.sh
-COPY --chown=keysight:users x11vnc_entrypoint.sh /opt/x11vnc_entrypoint.sh
+COPY --chown=keysight:users ./scripts/container_startup.sh /opt/container_startup.sh
+COPY --chown=keysight:users ./scripts/x11vnc_entrypoint.sh /opt/x11vnc_entrypoint.sh
+
+RUN fluxbox; exit 0
+RUN rm ~/.fluxbox/apps
+COPY .resources/fluxbox/apps /root/.fluxbox/apps
+COPY .resources/fluxbox/startup /root/.fluxbox/startup
 
 CMD ["/bin/bash"]
