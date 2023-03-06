@@ -4,7 +4,10 @@
   [Layer]    {2}
 [end]
 
-[app] (name=keysight)
+[app] (name=.*)
+
+  [Fullscreen]    {true}
+  [Dimensions]    {1400 850}
   [Position]   (WINCENTER)    {0 0}
   [Layer]    {2}
 [end]
