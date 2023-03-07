@@ -8,6 +8,9 @@ files=''
 gui_set=''
 output_set=''
 output='./'
+base_set=''
+extension_set=''
+
 
 f=''
 g=''
@@ -19,14 +22,15 @@ get_abs_filename() {
 }
 
 #Read Flags
-while getopts 'igl:o:d:f:' flag; do
+while getopts 'pigl:o:d:f:' flag; do
   case "${flag}" in
+    p) pull_set=1 ;;
     l) license_server="$OPTARG" ;;
-    i) interactive_shell_set='true' ;;
-    g) gui_set='true' ;;
-    o) output="${OPTARG}" && output_set='true' ;;
-    d) dir=$(get_abs_filename "${OPTARG}") && dir_set='true' ;;
-    f) files=("$OPTARG") && file_set='true'
+    i) interactive_shell_set=1 ;;
+    g) gui_set=1 ;;
+    o) output="${OPTARG}" && output_set=1 ;;
+    d) dir=$(get_abs_filename "${OPTARG}") && dir_set=1 ;;
+    f) files=("$OPTARG") && file_set=1
         until [[ $(eval "echo \${$OPTIND}") =~ ^-.* ]] || [ -z $(eval "echo \${$OPTIND}") ]; do
                 files+=($(eval "echo \${$OPTIND}"))
                 OPTIND=$((OPTIND + 1))
@@ -35,7 +39,7 @@ while getopts 'igl:o:d:f:' flag; do
   esac
 done
 
-mkdir -p openTap/.resources
+mkdir -p openTap/.resources/testPlans
 
 #Flag Check
 if [ "$file_set" ];
@@ -57,7 +61,7 @@ then
             exit 1
         fi
     done
-    cp "${files[@]}" openTap/.resources/
+    cp "${files[@]}" openTap/.resources/testPlans/
     f='--build-arg FILES=true'
 fi
 
@@ -75,7 +79,7 @@ then
         echo "Usage: ./runall.sh -d <directory1> <directory2> ... <directoryN> [-f:o:g]"
         exit 1
     fi
-    cp $dir/*.TapPlan openTap/.resources/
+    cp $dir/*.TapPlan openTap/.resources/testPlans
     f='--build-arg FILES=true'
 
 fi
@@ -94,26 +98,65 @@ fi
 # #End of Flag Check
 
 echo 'Beginning build...'
+echo 'Checking Docker Hub for Images..'
+if [ $pull_set ] && [ "$(docker manifest inspect ucsckeysight/opentap:latest > /dev/null ; $? 2>&1)" ];
+then
+    echo 'Found OpenTAP Base Image...'
+    docker pull ucsckeysight/opentap:latest
+else
+    cd openTap
+    echo 'Building openTap...'
+    build="docker build -t ucsckeysight/opentap:latest $f $g . > /dev/null"
+    eval "$build"
+    cd ..
+fi
 
-cd openTap
-echo 'Building openTap...'
-build="docker build -t ucsc-keysight/opentap:latest $f $g . > /dev/null"
-eval "$build"
-rm .resources/*.TapPlan
+if [ $pull_set ] && [ $gui_set ] && [ "$(docker manifest inspect ucsckeysight/opentapflux:latest > /dev/null ; $? 2>&1)" ];
+then
+    echo 'Found OpenTAP Flux Extension...'
+    docker pull ucsckeysight/opentapflux:latest
+elif [ "$gui_set" ];
+then
+    cd openTap
+    echo 'Building OpenTAP Flux Extension...'
+    docker build -t ucsckeysight/opentapflux:latest -f DockerfileVNC .
+    cd ..
+fi
 
-cd ../urHandler
-echo 'Building urHandler...'
-build='docker build -t ucsc-keysight/urhandler:latest . > /dev/null'
-eval "$build"
-
+if [ $pull_set ] && [ "$(docker manifest inspect ucsckeysight/urhandler:latest > /dev/null ; $? 2>&1)" ];
+then 
+    echo 'Found UR Sim Image...'
+    docker pull ucsckeysight/urhandler:latest
+else
+    cd urHandler
+    echo 'Building urHandler...'
+    build='docker build -t ucsckeysight/urhandler:latest . > /dev/null'
+    eval "$build"
+    cd ..
+fi
+echo 'working directory is $(pwd)'
 echo 'Running Containers...'
+
+
 
 if [ "$gui_set" ];
 then
-    cd ..
+    tap_dir=$(get_abs_filename './openTap')
     docker-compose up -d urHandler
-    id=$(docker run -d --shm-size=256m -it -p 5902:5902 -p 30002:30002 -e VNC_PASSWD=keysight -e LM_LICENSE_FILE=@$license_server ucsc-keysight/opentap:latest /opt/container_startup.sh)
+
+    id=$(docker run -d --shm-size=256m \ 
+    -p 5902:5902 -p 30002:30002 \
+    -e VNC_PASSWD=keysight -e LM_LICENSE_FILE=@$license_server \
+    --mount type=bind, source={$tap_dir/openTapPlugin}, target=/opt/tap/Packages/UR3e \
+    --mount type=bind, source={$tap_dir/.resources/Settings/, target=/opt/tap/Settings/Bench/Default/} \
+    --mount type=bind, source={$tap_dir/scripts/runTestPlans.sh, target=/environment/scripts/runTestPlans.sh} \
+    --mount type=bind, source={$tap_dir/.resource/*.TapPlan, target=/environment/testPlans/} \
+    --mount type=bind, source={$tap_dir/scripts/*, target=/opt/} \
+    --mount type=bind, source={$tap_dir/.resources/fluxbox/, target=/root/.fluxbox/} \
+    ucsckeysight/opentapflux:latest /opt/container_startup.sh)
+
     docker network connect opentap-cobot-plugin_ursim_net "$id"
+
     printf "\n\n"
     echo "------- NoVNC Services have started -----------"
     echo ""
@@ -125,6 +168,7 @@ then
     echo "-----------------------------------------------"
     ( trap exit SIGINT ; read -r -d '' _ </dev/tty ) ## wait for Ctrl-C
     printf "\n"
+    rm -rf openTap/.resources/testPlans
     echo "Removing OpenTAP Container @ $id..."
     docker stop $id
     echo "Removing Compose Network..."
@@ -135,10 +179,19 @@ fi
 
 if [ "$interactive_shell_set" ];
 then
-    cd .. && docker-compose run --rm -e LM_LICENSE_FILE=@$license_server openTapController /bin/bash
+    docker-compose run --rm -e LM_LICENSE_FILE=@$license_server openTapController /bin/bash
+    printf 'Removing Docker Network\n'
+    rm -rf openTap/.resources/testPlans
+    docker-compose down
+    exit 0
+
 fi
 
 if [ "$file_set" ] || [ "$dir_set" ];
 then
-    cd .. && docker-compose run --rm openTapController ./scripts/runTestPlans.sh
+    docker-compose run --rm openTapController ./scripts/runTestPlans.sh
+    printf 'Removing Docker Network\n'
+    rm -rf openTap/.resources/testPlans
+    docker-compose down
+    exit 0
 fi

@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t ucsc-keysight/urhandler:latest . > /dev/null
+docker build -t ucsckeysight/urhandler:latest . > /dev/null

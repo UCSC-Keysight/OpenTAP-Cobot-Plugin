@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t ucsc-keysight/opentap:latest . > /dev/null
+docker build -t ucsckeysight/opentap:latest . > /dev/null

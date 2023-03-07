@@ -2,7 +2,7 @@ version:
   "3"
 services:
   urHandler:
-    image: "ucsc-keysight/urhandler:latest"
+    image: "ucsckeysight/urhandler:latest"
     ports:
       - 6080:6080
       - 5900:5900
@@ -12,10 +12,21 @@ services:
         ipv4_address: 192.168.56.101 
         
   openTapController:
-    image: "ucsc-keysight/opentap:latest"
-    #network_mode: host
+    image: "ucsckeysight/opentap:latest"
     restart: unless-stopped
-    mac_address: 00:1c:42:8a:53:9b
+    volumes:
+      - type: bind
+        source: ./openTap/openTapPlugin
+        target: /opt/tap/Packages/UR3e/
+      - type: bind
+        source: ./openTap/.resources/Settings/
+        target: /opt/tap/Settings/Bench/Default/
+      - type: bind
+        source: ./openTap/scripts
+        target: /environment/scripts
+      - type: bind
+        source: ./openTap/.resources/testPlans
+        target: /environment/testPlans
     depends_on:
       - urHandler
     networks:
