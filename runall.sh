@@ -134,7 +134,7 @@ else
     eval "$build"
     cd ..
 fi
-echo 'working directory is $(pwd)'
+
 echo 'Running Containers...'
 
 
@@ -149,15 +149,16 @@ then
     -p 30002:30002 \
     -e VNC_PASSWD=keysight \
     -e LM_LICENSE_FILE=@$license_server \
-    --mount type=bind,source=$tap_dir/openTapPlugin,target=/opt/tap/Packages/UR3e \
-    --mount type=bind,source=$tap_dir/.resources/Settings/,target=/opt/tap/Settings/Bench/Default/ \
-    --mount type=bind,source=$tap_dir/scripts/runTestPlans.sh,target=/environment/scripts/runTestPlans.sh \
-    --mount type=bind,source=$tap_dir/.resources/testPlans,target=/environment/testPlans \
-    --mount type=bind,source=$tap_dir/scripts/,target=/opt/ \
-    --mount type=bind,source=$tap_dir/.resources/fluxbox/,target=/root/.fluxbox/ \
+    --mount type=bind,source=$tap_dir/openTapPlugin,target=/opt/tap/Packages/UR3e,bind-propagation=rprivate \
+    --mount type=bind,source=$tap_dir/.resources/Settings/,target=/opt/tap/Settings/Bench/Default/,bind-propagation=rprivate\
+    --mount type=bind,source=$tap_dir/scripts/runTestPlans.sh,target=/environment/scripts/runTestPlans.sh,bind-propagation=rprivate \
+    --mount type=bind,source=$tap_dir/.resources/testPlans,target=/environment/testPlans,bind-propagation=rprivate \
+    --mount type=bind,source=$tap_dir/scripts/container_startup.sh,target=/opt/container_startup.sh,bind-propagation=rprivate \
+    --mount type=bind,source=$tap_dir/scripts/container_startup.sh,target=/opt/x11vnc_entrypoint.sh,bind-propagation=rprivate \
+    --mount type=bind,source=$tap_dir/.resources/fluxbox/,target=/root/.fluxbox/,bind-propagation=rprivate\
     ucsckeysight/opentapflux:latest /opt/container_startup.sh)
 
-    docker network connect opentap-cobot-plugin_ursim_net "$id"
+    #docker network connect opentap-cobot-plugin_ursim_net "$id"
 
     printf "\n\n"
     echo "------- NoVNC Services have started -----------"
