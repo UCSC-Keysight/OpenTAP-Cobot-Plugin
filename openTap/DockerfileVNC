@@ -29,12 +29,12 @@ RUN echo keysight:keysight | chpasswd
 RUN usermod -a -G sudo keysight
 USER root
 
+COPY --chown=keysight:users ./scripts/container_startup.sh /opt/container_startup.sh
+COPY --chown=keysight:users ./scripts/x11vnc_entrypoint.sh /opt/x11vnc_entrypoint.sh
+
 RUN fluxbox; exit 0
 RUN rm ~/.fluxbox/apps
+COPY .resources/fluxbox/apps /root/.fluxbox/apps
+COPY .resources/fluxbox/startup /root/.fluxbox/startup
 
-# COPY --chown=keysight:users ./scripts/container_startup.sh /opt/container_startup.sh
-# COPY --chown=keysight:users ./scripts/x11vnc_entrypoint.sh /opt/x11vnc_entrypoint.sh
-# COPY .resources/fluxbox/apps /root/.fluxbox/apps
-# COPY .resources/fluxbox/startup /root/.fluxbox/startup
-#COPY ./.resources/*.TapPlan /environment/testPlans/
 CMD ["/bin/bash"]

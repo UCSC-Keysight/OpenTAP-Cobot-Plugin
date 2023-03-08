@@ -10,7 +10,7 @@ output_set=''
 output='./'
 base_set=''
 extension_set=''
-
+build_set=''
 
 f=''
 g=''
@@ -22,9 +22,9 @@ get_abs_filename() {
 }
 
 #Read Flags
-while getopts 'pigl:o:d:f:' flag; do
+while getopts 'bigl:o:d:f:' flag; do
   case "${flag}" in
-    p) pull_set=1 ;;
+    b) build_set=1 ;;
     l) license_server="$OPTARG" ;;
     i) interactive_shell_set=1 ;;
     g) gui_set=1 ;;
@@ -99,7 +99,7 @@ fi
 
 echo 'Beginning build...'
 echo 'Checking Docker Hub for Images..'
-if [ $pull_set ] && [ "$(docker manifest inspect ucsckeysight/opentap:latest > /dev/null ; $? 2>&1)" ];
+if [ ! $build_set ] && [ "$(docker manifest inspect ucsckeysight/opentap:latest > /dev/null ; $? 2>&1)" ];
 then
     echo 'Found OpenTAP Base Image...'
     docker pull ucsckeysight/opentap:latest
@@ -111,7 +111,7 @@ else
     cd ..
 fi
 
-if [ $pull_set ] && [ $gui_set ] && [ "$(docker manifest inspect ucsckeysight/opentapflux:latest > /dev/null ; $? 2>&1)" ];
+if [ ! $build_set ] && [ $gui_set ] && [ "$(docker manifest inspect ucsckeysight/opentapflux:latest > /dev/null ; $? 2>&1)" ];
 then
     echo 'Found OpenTAP Flux Extension...'
     docker pull ucsckeysight/opentapflux:latest
@@ -123,7 +123,7 @@ then
     cd ..
 fi
 
-if [ $pull_set ] && [ "$(docker manifest inspect ucsckeysight/urhandler:latest > /dev/null ; $? 2>&1)" ];
+if [ ! $build_set ] && [ "$(docker manifest inspect ucsckeysight/urhandler:latest > /dev/null ; $? 2>&1)" ];
 then 
     echo 'Found UR Sim Image...'
     docker pull ucsckeysight/urhandler:latest
@@ -136,29 +136,23 @@ else
 fi
 
 echo 'Running Containers...'
-
-
+tap_dir=$(get_abs_filename './openTap')
+docker volume create --name resources --opt type=none --opt device=$tap_dir --opt o=bind
 
 if [ "$gui_set" ];
 then
-    tap_dir=$(get_abs_filename './openTap')
     docker-compose up -d urHandler
 
     id=$(docker run -d \
-    --shm-size=256m -p 5902:5902 \
+    -p 5902:5902 \
     -p 30002:30002 \
+    --shm-size=256m \
     -e VNC_PASSWD=keysight \
     -e LM_LICENSE_FILE=@$license_server \
-    --mount type=bind,source=$tap_dir/openTapPlugin,target=/opt/tap/Packages/UR3e,bind-propagation=rprivate \
-    --mount type=bind,source=$tap_dir/.resources/Settings/,target=/opt/tap/Settings/Bench/Default/,bind-propagation=rprivate\
-    --mount type=bind,source=$tap_dir/scripts/runTestPlans.sh,target=/environment/scripts/runTestPlans.sh,bind-propagation=rprivate \
-    --mount type=bind,source=$tap_dir/.resources/testPlans,target=/environment/testPlans,bind-propagation=rprivate \
-    --mount type=bind,source=$tap_dir/scripts/container_startup.sh,target=/opt/container_startup.sh,bind-propagation=rprivate \
-    --mount type=bind,source=$tap_dir/scripts/container_startup.sh,target=/opt/x11vnc_entrypoint.sh,bind-propagation=rprivate \
-    --mount type=bind,source=$tap_dir/.resources/fluxbox/,target=/root/.fluxbox/,bind-propagation=rprivate\
+    -v ./openTap/.resources/testPlans,target=/environment/testPlans/ \
     ucsckeysight/opentapflux:latest /opt/container_startup.sh)
 
-    #docker network connect opentap-cobot-plugin_ursim_net "$id"
+    docker network connect opentap-cobot-plugin_ursim_net "$id"
 
     printf "\n\n"
     echo "------- NoVNC Services have started -----------"
@@ -171,30 +165,22 @@ then
     echo "-----------------------------------------------"
     ( trap exit SIGINT ; read -r -d '' _ </dev/tty ) ## wait for Ctrl-C
     printf "\n"
-    rm -rf openTap/.resources/testPlans
     echo "Removing OpenTAP Container @ $id..."
     docker stop $id
-    echo "Removing Compose Network..."
-    docker-compose down
-    exit 0
-
 fi
 
 if [ "$interactive_shell_set" ];
 then
     docker-compose run --rm -e LM_LICENSE_FILE=@$license_server openTapController /bin/bash
-    printf 'Removing Docker Network\n'
-    rm -rf openTap/.resources/testPlans
-    docker-compose down
-    exit 0
-
 fi
 
-if [ "$file_set" ] || [ "$dir_set" ];
+if [ ! $interactive_shell_set ] && [ ! $gui_set ] && [ "$file_set" ] || [ "$dir_set" ];
 then
     docker-compose run --rm openTapController ./scripts/runTestPlans.sh
-    printf 'Removing Docker Network\n'
-    rm -rf openTap/.resources/testPlans
-    docker-compose down
-    exit 0
 fi
+
+printf 'Removing Docker Network\n'
+rm -rf openTap/.resources/testPlans
+
+docker-compose down
+exit 0

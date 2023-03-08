@@ -15,18 +15,10 @@ services:
     image: "ucsckeysight/opentap:latest"
     restart: unless-stopped
     volumes:
-      - type: bind
-        source: ./openTap/openTapPlugin
-        target: /opt/tap/Packages/UR3e/
-      - type: bind
-        source: ./openTap/.resources/Settings/
-        target: /opt/tap/Settings/Bench/Default/
-      - type: bind
-        source: ./openTap/scripts
-        target: /environment/scripts
-      - type: bind
-        source: ./openTap/.resources/testPlans
-        target: /environment/testPlans
+      - ./openTap/openTapPlugin/:/opt/tap/Packages/UR3e/
+      - ./openTap/.resources/Settings/:/opt/tap/Settings/Bench/Default/
+      - ./openTap/scripts/:/environment/scripts/
+      - ./openTap/.resources/testPlans/:/environment/testPlans/
     depends_on:
       - urHandler
     networks:
@@ -42,3 +34,6 @@ networks:
       config:
         - subnet: 192.168.56.0/24
           gateway: 192.168.56.1
+volumes:
+  resources:
+    external: true
