@@ -180,7 +180,7 @@ then
 fi
 
 printf 'Removing Docker Network\n'
-rm -rf openTap/.resources/testPlans
+rm -rf openTap/.resources/testPlans/
 
 docker-compose down
 exit 0

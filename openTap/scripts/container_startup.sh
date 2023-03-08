@@ -9,7 +9,6 @@ vncserver :0 -geometry 1400x850 -localhost no -nolisten -rfbauth $HOME/.vnc/pass
 
 echo -e "\n\n------------------ VNC environment started ------------------"
 echo -e "\nnoVNC HTML client started:\n\t=> connect via http://localhost:5902/?password=$VNC_PASSWD\n"
-echo -e "AND NOT THE ONE BELOW IT IS A LIE\n"
 
 if [ -z "$1" ]; then
   tail -f /dev/null
