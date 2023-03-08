@@ -144,15 +144,17 @@ then
     tap_dir=$(get_abs_filename './openTap')
     docker-compose up -d urHandler
 
-    id=$(docker run -d --shm-size=256m \ 
-    -p 5902:5902 -p 30002:30002 \
-    -e VNC_PASSWD=keysight -e LM_LICENSE_FILE=@$license_server \
-    --mount type=bind, source={$tap_dir/openTapPlugin}, target=/opt/tap/Packages/UR3e \
-    --mount type=bind, source={$tap_dir/.resources/Settings/, target=/opt/tap/Settings/Bench/Default/} \
-    --mount type=bind, source={$tap_dir/scripts/runTestPlans.sh, target=/environment/scripts/runTestPlans.sh} \
-    --mount type=bind, source={$tap_dir/.resource/*.TapPlan, target=/environment/testPlans/} \
-    --mount type=bind, source={$tap_dir/scripts/*, target=/opt/} \
-    --mount type=bind, source={$tap_dir/.resources/fluxbox/, target=/root/.fluxbox/} \
+    id=$(docker run -d \
+    --shm-size=256m -p 5902:5902 \
+    -p 30002:30002 \
+    -e VNC_PASSWD=keysight \
+    -e LM_LICENSE_FILE=@$license_server \
+    --mount type=bind,source=$tap_dir/openTapPlugin,target=/opt/tap/Packages/UR3e \
+    --mount type=bind,source=$tap_dir/.resources/Settings/,target=/opt/tap/Settings/Bench/Default/ \
+    --mount type=bind,source=$tap_dir/scripts/runTestPlans.sh,target=/environment/scripts/runTestPlans.sh \
+    --mount type=bind,source=$tap_dir/.resources/testPlans,target=/environment/testPlans \
+    --mount type=bind,source=$tap_dir/scripts/,target=/opt/ \
+    --mount type=bind,source=$tap_dir/.resources/fluxbox/,target=/root/.fluxbox/ \
     ucsckeysight/opentapflux:latest /opt/container_startup.sh)
 
     docker network connect opentap-cobot-plugin_ursim_net "$id"
