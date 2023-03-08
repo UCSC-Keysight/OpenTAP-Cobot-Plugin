@@ -32,6 +32,6 @@ runall.sh [bigl:d:f:o:] (Automation script for setting up OpenTAP/UR Sim/ROS2 (T
     -d <dir> Moves all testplan files within directory to the container be automatically run (Unless -i or -g is set)
     -o set output directory for test data and testplan logs (to be implemented)
 
-
+By default runall.sh pulls images from Docker Hub on the ucsckeysight account, including -d or -f with the interactive shell or gui does not automatically run the testplans, but instead imports them to the environment directory to prevent override in stdout.
 
 
