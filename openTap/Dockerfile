@@ -16,8 +16,4 @@ RUN apt-get update && apt-get install -y \
 RUN echo "Installing OpenTAP packages..."
 RUN tap package install Python
 
-# COPY ./openTapPlugin /opt/tap/Packages/UR3e/
-# COPY ./.resources/Settings/* /opt/tap/Settings/Bench/Default/
-# COPY ./scripts/* /environment/scripts/
-#COPY ./.resources/*.TapPlan /environment/testPlans/
 CMD ["/bin/bash"]
