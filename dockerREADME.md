@@ -1,16 +1,37 @@
 # Docker Setup Steps
 
-1. simply ./runall.sh
+Added files in changelog:
+    docker-compose.yaml
+    runall.sh
+    openTap/
+        .resources/
+            fluxbox/
+                apps (formats editor x to full screen and applies startup)
+                startup (starts editor x and begins flux)
+            Settings/ (Handles default settings for Editor/TUI)
+                Connections.xml
+                DUTs.xml
+                Instruments.xml (Defaults UR3e instrument on bench with IP: 192.168.56.101)
+        scripts/
+            container_startup.sh (Sets up VNC Server and calls x11vnc_entrypoint.sh)
+            runTestPlans.sh (Reads through the /environment/testPlans/ folder and runs each testplan iteratively outputting logs)
+            x11vnc_entrpoiny.sh (Links vnc to fluxbox in /usr/bin/fluxbox including additional setup)
+        build.sh (Builds the opentap base image)
+        Dockerfile (Setup steps for opentap base image)
+        DockerfileVNC (Setup steps for opentap flux extension image)
+    urHandler/ (Builds the basic urHandler image)
 
-This builds all necessary dependencies and sets up the containers through the docker-compose.yaml which will take a few minutes.
- - *For now the computer architecture must be x86_64 as docker expects that tag when building the image in compose.*
+runall.sh script manual page
 
-Once complete an interactive shell should open with access to the OpenTap container.
- - To access the editor run the command: tap tui
- - Set the UR3e's IP to: 192.168.56.101 under instruments and add it to the testplan.
- - Press F2 to add a test step and add a move cobot plan to the test steps.
- - Press F5 to run.
+runall.sh [bigl:d:f:o:] (Automation script for setting up OpenTAP/UR Sim/ROS2 (TBD))
+    -b force builds containers instead of pulling from Docker Hub
+    -i Opens an interactive shell to the opentap container
+    -g Opens editor GUI within the opentap container hosted on a VNC webserver (Also includes environment dir with testplans and scripts)
+    -l @<license-server-ip> Creates an env variable for the LM_LICENSE_FILE
+    -f <file1> <file2> <fileN> Transfers 1 or more testplan files to the container to be automatically run (Unless -i or -g is set)
+    -d <dir> Moves all testplan files within directory to the container be automatically run (Unless -i or -g is set)
+    -o set output directory for test data and testplan logs (to be implemented)
 
- In the background another container connected to the same subnet will handle calls to the UR Sim.
-  - To access the simulator go to: http://localhost:6080
-  - Click on: vnc_auto.html
+
+
+
