@@ -34,4 +34,6 @@ runall.sh [bigl:d:f:o:] (Automation script for setting up OpenTAP/UR Sim/ROS2 (T
 
 By default runall.sh pulls images from Docker Hub on the ucsckeysight account, including -d or -f with the interactive shell or gui does not automatically run the testplans, but instead imports them to the environment directory to prevent override in stdout.
 
+Initial build time will average from 2-4 minutes, after the initial build all further use is cached and instant. All environmental variables and imported code is stored via volume mounts and do not interfere with the image itself.
+
 
