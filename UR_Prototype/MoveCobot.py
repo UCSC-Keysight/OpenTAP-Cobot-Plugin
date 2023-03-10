@@ -16,11 +16,11 @@ clr.AddReference("System.Collections")
 @attribute(OpenTap.Display("Move Cobot", "Moves UR3e cobot to the specified location", "UR_Prototype"))
 class MoveCobot(TestStep):
 
-    UR3e_cobot = property(UR3e, None).\
+    ur3e_cobot = property(UR3e, None).\
         add_attribute(OpenTap.Display(
             "Instrument", "The instrument to use in the step.", "Resources"))
-    Command = property(String, "movej([0, 0, 0, 0, 0, 0], a=1.2, v=1.05)")\
-        .add_attribute(Display("Command", "This move command gets sent to the UR Cobot", "UR Script", -1, True))
+    command = property(String, "movej([0, 0, 0, 0, 0, 0], a=1.2, v=1.05)")\
+        .add_attribute(Display("command", "This move command gets sent to the UR Cobot", "UR Script", -1, True))
 
     def __init__(self):
         super(MoveCobot, self).__init__()
@@ -32,7 +32,7 @@ class MoveCobot(TestStep):
         super().Run()
 
         # This sends the command to UR3e Instrument abstraction.
-        response_received = self.UR3e_cobot.send_request_movement(self.Command)
+        response_received = self.ur3e_cobot.send_request_movement(self.command)
 
         if response_received == True:
             self.log.Info("URScript received by cobot controller.\n")

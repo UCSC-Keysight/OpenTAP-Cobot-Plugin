@@ -5,7 +5,7 @@ import socket
 
 @attribute(OpenTap.Display("UR3e", "UR3e driver.", "UR_Prototype"))
 class UR3e(Instrument):
-    IpAddress = property(String, "10.0.0.133")\
+    ip_address = property(String, "10.0.0.133")\
         .add_attribute(OpenTap.Display("IP Address", "The static IP address of the UR3e cobot."))
     def __init__(self):
         super(UR3e, self).__init__()
@@ -19,13 +19,13 @@ class UR3e(Instrument):
     @method(Double)
     def send_request_movement(self, command):
 
-        HOST = self.IpAddress
+        HOST = self.ip_address
         PORT = 30002
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
             client_socket.settimeout(4)
 
-            self.log.Info("Connecting with {}:{}".format(self.IpAddress, PORT))
+            self.log.Info("Connecting with {}:{}".format(self.ip_address, PORT))
             try:
                 client_socket.connect((HOST, PORT))
             except socket.timeout as e:
