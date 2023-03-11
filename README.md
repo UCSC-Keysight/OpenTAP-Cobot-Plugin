@@ -4,54 +4,86 @@
 
 - This file provides technical documentation related to UCSC-Keysight's software development project that seeks to create OpenTAP plugins to control Universal Robots' _(UR)_ cobot model UR3e.
 - These plugins are loosely being designed to potentially extend to other cobots in the future.
-- The immediate purpose of these plugins will tenatively be used in 6G testing as described [here](https://gist.github.com/Shawn-Armstrong/8018e24419fa095ff15e1e2458042c8a).
+- The immediate purpose of these plugins will tentatively be used in 6G testing as described [here](https://gist.github.com/Shawn-Armstrong/8018e24419fa095ff15e1e2458042c8a).
 
 ## Usage
-
-The following demonstration controls the cobot with OpenTAP using Keysight's Pathwave editor. The cobot moves to the specified location using the test step's URScript field at the execution of the test plan. 
-
-- Clicking on the image will increase the resolution.
-
-<kbd>![demonstration1](https://user-images.githubusercontent.com/80125540/217394032-08fd0b76-ed92-4a0b-8130-967558308db0.gif)</kbd>
+- End-user uses OpenTAP plugin to send move commands to the cobot. 
+    
+ <kbd>![usage](https://user-images.githubusercontent.com/80125540/224439881-c21aa793-5173-42e4-9a26-bb517041b3e3.gif)</kbd>
 
 ## Setup
 
 ### Requirements
 
 - [Python3](https://www.python.org/downloads/)
-- [OpenTAP](https://opentap.io/downloads)
 - [Git](https://git-scm.com/downloads)
-- [UR Simulator](https://gist.github.com/Shawn-Armstrong/bbb2615abd917efc958c7fce714b0d46#ur-simulator-setup)
+- [Docker](https://docs.docker.com/get-docker/)
+- [.NET SDK](https://aka.ms/dotnet-download)
+- [Google Chrome](https://www.google.com/chrome/)
 
 ### Instructions
 
-1. Start the UR simulator, create a UR3e instance then activate the cobot.
-
-   <kbd>![setup1](https://user-images.githubusercontent.com/80125540/217388958-6d24335a-eda0-4a0d-95fa-1f553773d3dc.gif)</kbd>
-
-2. [Download](https://opentap.io/downloads) and install OpenTAP for your system.
-3. Open a command line, navigate to the installed `../OpenTap` root directory then run the following commands:
-
+1. Start the UR3e simulator container by opening a console and running the following commands:
+     
    ```Console
-   tap package install "Editor CE"
-   tap package install Python
-   tap package install SDK
-   ```
+   docker network create --subnet=192.168.56.0/24 ursim_net
+   docker run -it -e ROBOT_MODEL=UR3e --net ursim_net --ip 192.168.56.101 -p 30002:30002 -p 30004:30004 -p 6080:6080 --name ur3e_container universalrobots/ursim_e-series
+   ``` 
+2. Start the cobot by visiting http://localhost:6080/vnc_auto.html using Google Chrome and performing the following actions:
+     
+   <kbd>![start_cobot](https://user-images.githubusercontent.com/80125540/224440933-3e993623-81e5-48c1-9858-8629fe25f684.gif)</kbd>
 
-4. Navigate to `../OpenTap/Packages` then clone the repository.
+3. Clone this repository in a directory of your choosing then navigate inside its root directory with the following commands:
+     
    ```Console
    git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git
+   cd OpenTAP-Cobot-Plugin
    ```
-5. Navigate back to the `../OpenTap` root directory then open the editor with the following command:
+4. Perform the following build procedure inside the root directory; this will create the plugin using the current implementation files and open the editor for testing.
+   ````Console
+   dotnet build
+   bin\tap editor
+   ````
+5. Test the built plugin using the editor with the following actions:
+   - In the OpenTAP editor, click the + icon to add a new test step.
+   - In the Pop-up test step window, select UR Prototype > Move Cobot > Add.
+   - At the bottom of the window, right click the UR3e instrument, click Configure, and set the IP address as your host network's IPv4 address.
+     - As an example, this can be identified on a Windows machine using a console running the command `ipconfig`; it should look something like this:
+         
+       ![image](https://user-images.githubusercontent.com/80125540/224469661-a78df69b-9ec3-408f-9578-e0a206b92601.png)
+   - Click the green play button to run the test plan, and watch the UR3e move.
+     
+   <kbd>![step4](https://user-images.githubusercontent.com/80125540/224439495-be4a2be1-a2d2-48fb-b36e-d018a18b1af1.gif)</kbd>
 
-   ```Console
-   tap editor
-   ```
+### Setup Summary
+- This setup is intended to provide a developing environment for plugin developers using OpenTAP's boilerplate for Python projects.
+- The `bin` directory is a standalone OpenTAP installation used for streamlined testing. 
+- The setup intends for developers to make changes to the implementation files then run `dotnet build` to apply the changes then `bin\tap` to test them in the editor. 
+- This setup is preferred because the `.csproj` and `.sln` files assist in managing dependencies during the build process.
+- This setup is not intended to be used by customers. Instead, developers will use it to produce a `.TapPackage` outlined in the Packaging section of the document. This package will one day be added to Keysight's package manager so a customer may access it by using `tap package install ur3e`
+   
+## Packaging
 
-6. Setup and configure the test plan within the GUI with the following actions:
-   
-   <kbd>![setup2](https://user-images.githubusercontent.com/80125540/217393507-60ff4c8d-f3f6-4d1b-ad6c-fcbdd60e667c.gif)</kbd>
-   
+### Creating Package
+- This plugin can be compressed into a package after build, if desired, by running the following command:
+    
+    ```
+    bin\tap package create ./package.xml
+    ``` 
+### Installing Package Manually
+- The `.TapPackage` can be installed into an actual OpenTAP installation by navigating to the OpenTAP root directory inside a console and running the following command:
+    
+     ```Console
+     tap package install <path-to-.TapPackage-file>
+     ```
+
+### Installing Package with Package Manager
+- **In the future**, a package will be added to Keysight's package manager which can be installed by navigating to the OpenTAP root directory inside a console and running the following command:
+    
+  ```Console
+  tap package install ur3e
+  ```
+  
 ## Technical Details
 
 ### OpenTAP Infrastructure
@@ -74,36 +106,15 @@ The prototype only uses an instrument named `UR3e` and a test step `MoveCobot`.
 #### `UR3e`
 - A tool responsible for performing a conditioning action to the DUT; namely, modifying its location via the cobot arm. 
 - Object strictly encapsulates logic related to this responsibility.
-  - Implements `send_move_request()` which is used to modify the state of the cobot given an **arbitrary** move command. 
-  - Implements logic used to display it's information on the GUI.
+  - Implements `send_request_movement()` which is used to modify the state of the cobot given an **arbitrary** move command. 
+  - Implements logic used to display its information on the GUI.
   
 #### `MoveCobot`
 - Instantiates a `UR3e` object
 - Implements logic used to collect URScript input from the end-user stored in `command`.
-- Invokes the `UR3e` function `send_move_request(command)`
+- Invokes the `UR3e` function `send_request_movement(command)`
 
 #### `send_request_movement()`
 - Creates a TCP socket connection.
-- Sends requests to UR3e internal server.
-- Receives response back from UR3e internal server.
-
-# Current Design and Future Direction
-
-A lot of thought was put into finding the optimal way to design a GUI that'll allow the end-user to manipulate the UR3e in an intuitive manner that can be later scaled to an arbitrary cobot. My conclusion was an overly simple solution; make a dynamic test step that accepts input. 
-
-<kbd>![image](https://user-images.githubusercontent.com/80125540/217410675-b7370e49-0ba8-470c-b2d3-453cba271497.png)</kbd>
-
-This design conforms to OpenTAPs infrastructure; that is, a test step performs a single action and can be versatile. A practical test plan might looks something like this:
-
-<kbd>![image](https://user-images.githubusercontent.com/80125540/217411520-a6c13f95-d2f9-4447-9a94-734318302fd5.png)</kbd>
-
-Furthermore, I believe this will scale well. We can add a cobot field then use OpenTap's `Display` module to hide / expose certain fields based on the cobot field.
-
-
-## Bugs / Project Concerns
-
-- [`send_request_movement()` prompts safety conflict.](https://user-images.githubusercontent.com/80125540/217407574-28cf2437-9097-4cba-8775-604fce77fcfb.gif)
-- [Response is serialized.](https://user-images.githubusercontent.com/80125540/217407909-2838d182-68f7-482d-81b1-037fc5f79d53.png)
-- [UR ROS2 Driver's simulator fails.](https://github.com/UniversalRobots/Universal_Robots_ROS2_Driver/issues/588)
-
-
+- Sends requests to UR3e simulator's internal server.
+- Receives response back from UR3e simulator's internal server.

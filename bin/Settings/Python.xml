@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PythonSettings type="OpenTap.Python.PythonSettings">
+  <PythonPath />
+  <PythonLibraryPath />
+  <SearchPathList>
+    <PluginSearchPath>
+      <SearchPath>C:\Users\shawn\OneDrive\Desktop\test2</SearchPath>
+      <Enabled>true</Enabled>
+    </PluginSearchPath>
+    <PluginSearchPath>
+      <SearchPath>C:\Users\shawn\OneDrive\Desktop\test\OpenTAP-Cobot-Plugin</SearchPath>
+      <Enabled>true</Enabled>
+    </PluginSearchPath>
+    <PluginSearchPath>
+      <SearchPath>C:\Users\shawn\OneDrive\Desktop\test5\OpenTAP-Cobot-Plugin</SearchPath>
+      <Enabled>true</Enabled>
+    </PluginSearchPath>
+  </SearchPathList>
+  <Debug>false</Debug>
+  <DebugPort>5678</DebugPort>
+  <Package.Dependencies>
+    <Package Name="OpenTAP" Version="^9.19.4+7959a308" />
+  </Package.Dependencies>
+</PythonSettings>
