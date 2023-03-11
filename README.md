@@ -47,7 +47,10 @@
 5. Test the built plugin using the editor with the following actions:
    - In the OpenTAP editor, click the + icon to add a new test step.
    - In the Pop-up test step window, select UR Prototype > Move Cobot > Add.
-   - At the bottom of the window, right click the UR3e instrument, click Configure, and set the IP address as your host network's IP address.
+   - At the bottom of the window, right click the UR3e instrument, click Configure, and set the IP address as your host network's IPv4 address.
+     - As an example, this can be identified on a Windows machine using a console running the command `ipconfig`; it should look something like this:
+         
+       ![image](https://user-images.githubusercontent.com/80125540/224469661-a78df69b-9ec3-408f-9578-e0a206b92601.png)
    - Click the green play button to run the test plan, and watch the UR3e move.
      
    <kbd>![step4](https://user-images.githubusercontent.com/80125540/224439495-be4a2be1-a2d2-48fb-b36e-d018a18b1af1.gif)</kbd>
