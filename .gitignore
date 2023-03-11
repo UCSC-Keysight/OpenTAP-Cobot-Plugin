@@ -4,3 +4,4 @@ Dependencies/
 Packages/
 *.TapPackage
 bin/SessionLogs/*.txt
+bin/
