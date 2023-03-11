@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BasicSettings type="PythonExamples.BasicSettings.BasicSettings">
+  <NumberOfPoints>600</NumberOfPoints>
+  <Package.Dependencies>
+    <Package Name="PythonExamples" Version="^3.0.1+6a8e309f" />
+    <Package Name="OpenTAP" Version="^9.19.4+7959a308" />
+  </Package.Dependencies>
+</BasicSettings>
