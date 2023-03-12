@@ -30,9 +30,9 @@ runall.sh [bigl:d:f:o:] (Automation script for setting up OpenTAP/UR Sim/ROS2 (T
     -b force builds containers instead of pulling from Docker Hub
     -i Opens an interactive shell to the opentap container
     -g Opens editor GUI within the opentap container hosted on a VNC webserver (Also includes environment dir with testplans and scripts)
-    -l @<license-server-ip> Creates an env variable for the LM_LICENSE_FILE
-    -f <file1> <file2> <fileN> Transfers 1 or more testplan files to the container to be automatically run (Unless -i or -g is set)
-    -d <dir> Moves all testplan files within directory to the container be automatically run (Unless -i or -g is set)
+    -l @\<license-server-ip\> Creates an env variable for the LM_LICENSE_FILE
+    -f \<file1\> \<file2\> \<fileN\> Transfers 1 or more testplan files to the container to be automatically run (Unless -i or -g is set)
+    -d \<dir\> Moves all testplan files within directory to the container be automatically run (Unless -i or -g is set)
     -o set output directory for test data and testplan logs (to be implemented)
 
 By default runall.sh pulls images from Docker Hub on the ucsckeysight account. 
