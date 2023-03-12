@@ -137,6 +137,7 @@ fi
 
 echo 'Running Containers...'
 tap_dir=$(get_abs_filename './openTap')
+echo $tap_dir
 docker volume create --name resources --opt type=none --opt device=$tap_dir --opt o=bind
 
 if [ "$gui_set" ];
@@ -149,7 +150,10 @@ then
     --shm-size=256m \
     -e VNC_PASSWD=keysight \
     -e LM_LICENSE_FILE=@$license_server \
-    -v ./openTap/.resources/testPlans,target=/environment/testPlans/ \
+    -v $(pwd)/openTap/openTapPlugin/:/opt/tap/Packages/UR3e/ \
+    -v $(pwd)/openTap/.resources/Settings/:/opt/tap/Settings/Bench/Default/ \
+    -v $(pwd)/openTap/scripts/runTestPlans.sh:/environment/scripts/runTestPlans.sh \
+    -v $(pwd)/openTap/.resources/testPlans/:/environment/testPlans/ \
     ucsckeysight/opentapflux:latest /opt/container_startup.sh)
 
     docker network connect opentap-cobot-plugin_ursim_net "$id"
