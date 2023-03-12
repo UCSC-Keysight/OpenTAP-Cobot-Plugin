@@ -1,0 +1,39 @@
+version:
+  "3"
+services:
+  urHandler:
+    image: "ucsckeysight/urhandler:latest"
+    ports:
+      - 6080:6080
+      - 5900:5900
+    restart: unless-stopped
+    networks:
+      ursim_net:
+        ipv4_address: 192.168.56.101 
+        
+  openTapController:
+    image: "ucsckeysight/opentap:latest"
+    restart: unless-stopped
+    volumes:
+      - ./openTap/UR_Prototype/:/opt/tap/Packages/UR3e/
+      - ./openTap/.resources/Settings/:/opt/tap/Settings/Bench/Default/
+      - ./openTap/scripts/:/environment/scripts/
+      - ./openTap/.resources/testPlans/:/environment/testPlans/
+    depends_on:
+      - urHandler
+    networks:
+      - ursim_net
+    
+    
+
+networks:
+  ursim_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.56.0/24
+          gateway: 192.168.56.1
+volumes:
+  resources:
+    external: true
