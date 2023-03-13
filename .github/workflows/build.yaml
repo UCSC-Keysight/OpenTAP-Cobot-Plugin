@@ -39,7 +39,7 @@ jobs:
               popd
       - name: Install plugin and requirements
         run: |
-             pushd ./bin
+             pushd ./openTap/bin
              ./tap package install -v ../*.TapPackage
              ./tap python install-requirements -v
              popd
