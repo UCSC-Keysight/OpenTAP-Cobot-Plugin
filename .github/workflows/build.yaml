@@ -28,6 +28,7 @@ jobs:
         run: |
             pushd ./openTap
             dotnet build -c Release || echo true
+            popd
       # - name: Build plugin
       #   run: |
       #        dotnet build -c Release
@@ -35,6 +36,7 @@ jobs:
         run: |
               pushd ./openTap
              ./bin/tap package create -v --project-directory ./ ./package.xml
+              popd
       - name: Install plugin and requirements
         run: |
              pushd ./bin
