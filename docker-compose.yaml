@@ -15,7 +15,7 @@ services:
     image: "ucsckeysight/opentap:latest"
     restart: unless-stopped
     volumes:
-      - ./openTap/openTapPlugin/:/opt/tap/Packages/UR3e/
+      - ./openTap/UR_Prototype/:/opt/tap/Packages/UR3e/
       - ./openTap/.resources/Settings/:/opt/tap/Settings/Bench/Default/
       - ./openTap/scripts/:/environment/scripts/
       - ./openTap/.resources/testPlans/:/environment/testPlans/
