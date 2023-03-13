@@ -35,7 +35,7 @@ jobs:
       - name: Package plugin
         run: |
               pushd ./openTap
-             ./bin/tap package create -v --project-directory ./ ./package.xml
+              ./bin/tap package create -v --project-directory ./ ./package.xml
               popd
       - name: Install plugin and requirements
         run: |
