@@ -19,7 +19,7 @@
         <!-- <OpenTapPackageReference Include="EditorX"/> -->
         <!-- <OpenTapPackageReference Include="TUI"/> -->
     </ItemGroup>
-
+ 
     <ItemGroup Condition="'$(IsWindows)'=='true'">
         <OpenTapPackageReference Include="Editor CE"/>
     </ItemGroup>
