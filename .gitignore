@@ -1,8 +1,11 @@
-UR_Prototype.Api/obj/
-UR_Prototype/__pycache__/
-bin/SessionLogs/*.txt
-bin/
+
 # Extraneous resources created during `bin\tap.exe package create ./package.xml`
 Dependencies/
 Packages/
 *.TapPackage
+
+# Extraneous resources created during `dotnet build`
+bin/
+UR_Prototype.Api/obj/
+OpenTAP-Cobot-Plugin/UR_Prototype/__pycache__/
+
