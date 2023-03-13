@@ -13,7 +13,7 @@
         <File Path="Packages/UR_Prototype/UR_Prototype.Api.dll" SourcePath="bin/UR_Prototype.Api.dll" >
             <ProjectFile/>
         </File>
-        <File Path="README.md" >
+        <File Path="Readme.md" >
             <ProjectFile/>
         </File>
     </Files>
