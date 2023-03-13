@@ -26,7 +26,9 @@ jobs:
         run: git fetch -f origin ${{ github.ref }}:${{ github.ref }} 
       - name: Restore the project
         run: |
+            pushd ./openTap
             dotnet build -c Release || echo true
+            popd
       # - name: Build plugin
       #   run: |
       #        dotnet build -c Release
