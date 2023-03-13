@@ -26,17 +26,13 @@ jobs:
         run: git fetch -f origin ${{ github.ref }}:${{ github.ref }} 
       - name: Restore the project
         run: |
-            pushd ./openTap
             dotnet build -c Release || echo true
-            popd
       # - name: Build plugin
       #   run: |
       #        dotnet build -c Release
       - name: Package plugin
         run: |
-              pushd ./openTap
              ./bin/tap package create -v --project-directory ./ ./package.xml
-              popd
       - name: Install plugin and requirements
         run: |
              pushd ./bin
