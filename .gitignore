@@ -1,7 +1,7 @@
 UR_Prototype.Api/obj/
 UR_Prototype/__pycache__/
 bin/SessionLogs/*.txt
-# bin/
+bin/
 # Extraneous resources created during `bin\tap.exe package create ./package.xml`
 Dependencies/
 Packages/
