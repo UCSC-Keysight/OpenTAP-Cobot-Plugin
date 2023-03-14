@@ -16,12 +16,13 @@ f=''
 g=''
 build=''
 
+#Returns absolute path of any given relative directory
 get_abs_filename() {
   # $1 : relative filename
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 }
 
-#Read Flags
+#Read Flags from CLI
 while getopts 'bigl:o:d:f:' flag; do
   case "${flag}" in
     b) build_set=1 ;;
@@ -143,7 +144,9 @@ docker volume create --name resources --opt type=none --opt device=$tap_dir --op
 if [ "$gui_set" ];
 then
     docker-compose up -d urHandler
-
+    #Instantiates a single container outside of compose.
+    #Required because Docker does not allow multiple network interfaces
+    #Within compose
     id=$(docker run -d \
     -p 5902:5902 \
     -p 30002:30002 \

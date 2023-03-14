@@ -1,6 +1,7 @@
 #!/bin/bash
 cd /environment/testPlans/
 
+#Sum of all .TapPlan Files within the testing directory
 sumFiles=$(ls -1 *.TapPlan 2>/dev/null | wc -l)
 counter=1
 

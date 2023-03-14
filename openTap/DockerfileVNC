@@ -7,6 +7,7 @@ EXPOSE 5900
 # for the browser VNC client
 EXPOSE 5901
 
+#Editor X and VNC Server dependencies
 RUN tap package install "Editor X"
 RUN git clone --branch v1.2.0 --single-branch https://github.com/novnc/noVNC.git /opt/noVNC
 RUN git clone --branch v0.9.0 --single-branch https://github.com/novnc/websockify.git /opt/noVNC/utils/websockify
@@ -29,9 +30,11 @@ RUN echo keysight:keysight | chpasswd
 RUN usermod -a -G sudo keysight
 USER root
 
+#Run Scripts for VNC Server
 COPY --chown=keysight:users ./scripts/container_startup.sh /opt/container_startup.sh
 COPY --chown=keysight:users ./scripts/x11vnc_entrypoint.sh /opt/x11vnc_entrypoint.sh
 
+#Create FluxBox Configurations
 RUN fluxbox; exit 0
 RUN rm ~/.fluxbox/apps
 COPY .resources/fluxbox/apps /root/.fluxbox/apps
