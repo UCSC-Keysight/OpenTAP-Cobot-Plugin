@@ -17,7 +17,47 @@ class UR3e(Instrument):
     # POST-CONDITION: Moves cobot to location specified by `command`; afterwards, receives cobot
     #                 response.
     @method(Double)
-    def send_request_movement(self, file_path):
+    def send_request_movement(self, command):
+
+        HOST = self.ip_address
+        PORT = 30002
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+            client_socket.settimeout(4)
+
+            self.log.Info("Connecting with {}:{}".format(self.ip_address, PORT))
+            try:
+                client_socket.connect((HOST, PORT))
+            except socket.timeout as e:
+                self.log.Error("Timeout error: {}".format(e))
+                return False
+            except socket.error as e:
+                self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
+                return False
+            try:
+                command + '\n'
+                self.log.Info(f"Sending command {command!r}")
+                client_socket.sendall(command.encode())
+                response = client_socket.recv(1024)    
+                self.log.Info(f"Client received: {response!r}")      
+
+            except socket.error as e:
+                self.log.Error("Send command failed. Error: {}".format(e))
+                return False
+
+        if response:
+            # Not sure how to deserialize response.
+            # Nothing in documentation about its encoding.
+            # https://forum.universal-robots.com/t/how-do-i-deserialize-response-messages-from-the-controller/26537
+            self.log.Warning("This response is serialized.")
+            client_socket.close()
+            return True
+        else:
+            self.log.Error("No response message received.")
+            client_socket.close()
+            return False
+
+    def send_request_from_file(self, file_path):
 
         HOST = self.ip_address
         PORT = 30002
@@ -61,6 +101,7 @@ class UR3e(Instrument):
             self.log.Error("No response message received.")
             client_socket.close()
             return False
+
 
     def Open(self):
         """Called by TAP when the test plan starts."""

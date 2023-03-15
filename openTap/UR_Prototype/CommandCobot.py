@@ -33,7 +33,7 @@ class CommandCobot(TestStep):
         super().Run()
         
         #Sends and records response from UR Bot
-        response_received = self.UR3e_cobot.send_request_movement(self.file_path)
+        response_received = self.UR3e_cobot.send_request_from_file(self.file_path)
 
         if response_received == True:
             self.log.Info("URScript received by cobot controller.\n")
