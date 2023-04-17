@@ -35,7 +35,7 @@ class UR3e(Instrument):
                 self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
                 return False
             try:
-                command + '\n'
+                command = command + '\n'
                 self.log.Info(f"Sending command {command!r}")
                 client_socket.sendall(command.encode())
                 response = client_socket.recv(1024)    
