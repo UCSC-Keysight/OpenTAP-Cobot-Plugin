@@ -80,7 +80,8 @@ class UR3e(Instrument):
                 f = open(file_path, "r")
                 all_commands = f.readlines()
                 for cur_command in all_commands:
-                    cur_command + '\n'
+                    if (cur_command[-1] != '\n'):
+                        cur_command = cur_command + '\n'
                     self.log.Info(f"Sending command {cur_command!r}")
                     client_socket.sendall(cur_command.encode())
                     response = client_socket.recv(1024)    
