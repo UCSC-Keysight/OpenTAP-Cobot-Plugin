@@ -5,7 +5,6 @@ import socket
 import time
 from .package import *
 
-packageHeaderFmt = '>I'
 
 @attribute(OpenTap.Display("UR3e", "UR3e driver.", "UR_Prototype"))
 class UR3e(Instrument):
@@ -15,11 +14,6 @@ class UR3e(Instrument):
         super(UR3e, self).__init__()
         self.Name = "UR3e"
 
-    # DESCRIPTION:    Opens socket, connects to cobot, sends request message with URScript payload,
-    #                 receives response message then closes socket.
-    # PRE-CONDITION:  Argv `command` must be a single line of URScript code that ends with `\n`.
-    # POST-CONDITION: Moves cobot to location specified by `command`; afterwards, receives cobot
-    #                 response.
     @method(Double)
     def send_request_movement(self, command):
 
@@ -34,19 +28,20 @@ class UR3e(Instrument):
                 client_socket.connect((HOST, PORT))
             except socket.timeout as e:
                 self.log.Error("Timeout error: {}".format(e))
-                return False
+                return None
             except socket.error as e:
                 self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
-                return False
+                return None
             try:
                 command = command + '\n'
+
                 # get target joint positions
                 target_pos_list = command.split("[")[1]
                 target_pos_list = target_pos_list.split("]")[0]
                 target_pos_list = target_pos_list.split(",")
                 target_pos_list = [round(float(i), (5)) for i in target_pos_list]
                 
-                # send commnad
+                # send command
                 self.log.Info(f"Sending command {command!r}")
                 client_socket.sendall(command.encode())
 
@@ -77,15 +72,15 @@ class UR3e(Instrument):
                 
             except socket.error as e:
                 self.log.Error("Send command failed. Error: {}".format(e))
-                return False
+                return None
 
         if new_message:
             client_socket.close()
-            return True
+            return new_package
         else:
             self.log.Error("No response message received.")
             client_socket.close()
-            return False
+            return None
 
     def send_request_from_file(self, file_path):
 
