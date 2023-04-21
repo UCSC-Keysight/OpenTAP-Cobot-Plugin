@@ -57,7 +57,6 @@ class CsvPythonResultListener(PyResultListener):
     def OnTestPlanRunCompleted(self, planRun, logStream):
         """Called by TAP when the test plan completes."""
         try:
-            print(self.sb)
             System.IO.File.WriteAllText(self.FilePath, self.sb.ToString())
         except Exception as e:
             self.log.Debug(e)
