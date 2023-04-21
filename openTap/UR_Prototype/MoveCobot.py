@@ -35,7 +35,7 @@ class MoveCobot(TestStep):
         else:
             self.log.Info("URScript command not received by cobot.\n")
             self.UpgradeVerdict(OpenTap.Verdict.Fail)
-        
+
 
     def PublishResult(self, tableName, package):
         """
@@ -65,12 +65,13 @@ class MoveCobot(TestStep):
 
         current_index = 0
         for subpackage in package.subpackage_list:
+            
             subpackage_field_names = list(subpackage.subpackage_variables._fields)
             for name in subpackage_field_names:
                 all_field_names.Add(name)
 
-            subpackage_field_values = list(subpackage.subpackage_variables)
             # Convert all elements in subpackage_field_values to strings
+            subpackage_field_values = list(subpackage.subpackage_variables)
             subpackage_field_values = [str(value) for value in subpackage_field_values]
 
             for value in subpackage_field_values:
@@ -78,4 +79,5 @@ class MoveCobot(TestStep):
                 current_index += 1
 
         self.Results.Publish(tableName, all_field_names, all_field_values)
+        
     

@@ -1,3 +1,8 @@
 openTap/UR_Prototype/__pycache__/
 openTap/bin/
 openTap/UR_Prototype.Api/obj/
+.vscode/
+*.TapPlan
+*.TapPackage
+openTap/Dependencies/
+openTap/Packages/UR_Prototype

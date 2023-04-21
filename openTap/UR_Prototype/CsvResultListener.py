@@ -1,6 +1,3 @@
-"""
-Example of how to make a Result Listener.
-"""
 import sys
 import clr
 import math
@@ -13,13 +10,13 @@ from System import String
 import OpenTap
 from OpenTap import Log, DisplayAttribute, Display, FilePathAttribute, FilePath
 
-@attribute(Display("CSV ResultListener", "An example of a ResultListener.", "UR_Prototype"))
+@attribute(Display("Cobot CSV ResultListener", "Publishes cobot data as a comma separated value file.", "UR_Prototype"))
 class CsvPythonResultListener(PyResultListener):
     FilePath = property(String, "MyFile.csv")\
         .add_attribute(FilePath(FilePathAttribute.BehaviorChoice.Open, ".csv"))\
         .add_attribute(Display("File Path", "File path for results."))
     def __init__(self):
-        super(CsvPythonResultListener, self).__init__() # The base class initializer must be invoked.
+        super(CsvPythonResultListener, self).__init__() 
         self.sb = StringBuilder()
         self.Name = "PyCSV"
 
@@ -34,15 +31,29 @@ class CsvPythonResultListener(PyResultListener):
     def OnResultPublished(self, stepRun, result):
         """Called by TAP when a chunk of results are published."""
         self.OnActivity()
+
+        # Writes variable names
         for row in range(0, result.Rows):
             first = True
             for col in range(0, result.Columns.Length):
                 if first:
                     first = False
                 else:
-                    self.sb.Append(", ")
+                    self.sb.Append(",")
+                self.sb.Append(str(result.Columns[col].Name))
+            self.sb.AppendLine("")
+
+        # Writes variable values
+        for row in range(0, result.Rows):
+            first = True
+            for col in range(0, result.Columns.Length):
+                if first:
+                    first = False
+                else:
+                    self.sb.Append(",")
                 self.sb.Append(str(result.Columns[col].Data.GetValue(row)))
             self.sb.AppendLine("")
+
     def OnTestPlanRunCompleted(self, planRun, logStream):
         """Called by TAP when the test plan completes."""
         try:
