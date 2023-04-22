@@ -6,6 +6,7 @@ import socket
 import time
 import tkinter as tk
 from .package import *
+from threading import Thread
 
 
 @attribute(OpenTap.Display("UR3e", "UR3e driver.", "UR_Prototype"))
@@ -20,7 +21,7 @@ class UR3e(Instrument):
     def __init__(self):
         super(UR3e, self).__init__()
         self.Name = "UR3e"
-        
+
         self._connection = None
         self.joint_values = []
         self.target_position_command = ""
@@ -243,6 +244,7 @@ class UR3e(Instrument):
     def increment_joint(self, index):
         """
         Increments the joint value at the given index and sends the updated joint positions to the cobot.
+        Generate programmatically generate a URScript command with joints then send it.
 
         Args:
             index (int): The index of the joint value to increment.
@@ -282,11 +284,12 @@ class UR3e(Instrument):
         initial_position_command = f"movej({self.initial_position}, v=1.0, a=1.0)\n"
         print(f"Initial: {initial_position_command}, target:{self.target_position_command}")
         
-        # Potential bug:
+
         # Caller goes out of scope before callee can finish.
-        # This needs to be handled better.
-        self.send_request_movement(initial_position_command)
-        time.sleep(5)
+        # also testing the waters for ROS2...
+        movement_thread = Thread(target=self.send_request_movement, args=(initial_position_command,))
+        movement_thread.start()
+        movement_thread.join()
 
         root.destroy()
         
