@@ -283,13 +283,12 @@ class UR3e(Instrument):
         self.target_position_command = f"movej({self.joint_values}, v=1.0, a=1.0)\n"
         initial_position_command = f"movej({self.initial_position}, v=1.0, a=1.0)\n"
         print(f"Initial: {initial_position_command}, target:{self.target_position_command}")
-        
 
+        # Potential bug:
         # Caller goes out of scope before callee can finish.
-        # also testing the waters for ROS2...
-        movement_thread = Thread(target=self.send_request_movement, args=(initial_position_command,))
-        movement_thread.start()
-        movement_thread.join()
+        # This needs to be handled better.
+        self.send_request_movement(initial_position_command)
+        time.sleep(5)
 
         root.destroy()
         
