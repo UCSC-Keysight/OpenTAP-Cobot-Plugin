@@ -5,8 +5,6 @@ import socket
 import time
 from .package import *
 
-packageHeaderFmt = '>I'
-
 @attribute(OpenTap.Display("UR3e", "UR3e driver.", "UR_Prototype"))
 class UR3e(Instrument):
     ip_address = property(String, "192.168.56.101")\
