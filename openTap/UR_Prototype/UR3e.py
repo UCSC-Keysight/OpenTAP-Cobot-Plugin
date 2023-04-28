@@ -2,7 +2,6 @@ from opentap import *
 from System import Double, String
 import OpenTap
 import socket
-import time
 from .package import *
 
 
@@ -128,10 +127,12 @@ class UR3e(Instrument):
                 self.log.Error("Could not connect to {}:{} Error: {}".format(HOST, PORT, e))
                 return False
             
-            # read messages from UR3e for 3 seconds or until we recieve joint state
-            start = time.time()
-            while (time.time() - start) < 3:
-                new_message = client_socket.recv(2096)
+            # read messages from UR3e until we recieve joint state
+            while True:
+                new_message = client_socket.recv(4096)
+                if not new_message:
+                    self.log.Error("Failed to receive message. Error: {}".format(socket.error))
+                    break
                 new_package = Package(new_message)
                 subpackage = new_package.get_subpackage("Joint Data")
                 if subpackage is not None:
