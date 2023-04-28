@@ -2,7 +2,6 @@ from opentap import *
 from System import Double, String
 import OpenTap
 import socket
-import time
 from .package import *
 
 @attribute(OpenTap.Display("UR3e", "UR3e driver.", "UR_Prototype"))
@@ -49,9 +48,11 @@ class UR3e(Instrument):
                 client_socket.sendall(command.encode())
 
                 # read joint positions until they equal target joint positions
-                start = time.time()
                 while True:
                     new_message = client_socket.recv(4096)
+                    if not new_message:
+                        self.log.Error("Failed to receive message. Error: {}".format(socket.error))
+                        break
                     new_package = Package(new_message)
                     subpackage = new_package.get_subpackage("Joint Data")
                     if subpackage is not None:
@@ -67,11 +68,7 @@ class UR3e(Instrument):
                         if actual_pos_list == target_pos_list:
                             self.log.Info("Target position " + str(target_pos_list) + " reached")
                             break
-
-                    if (time.time() - start) > 10: # allow 10 seconds before timeout
-                        self.log.Info("Request timed out")
-                        break
-                
+                    
             except socket.error as e:
                 self.log.Error("Send command failed. Error: {}".format(e))
                 return False
@@ -120,9 +117,11 @@ class UR3e(Instrument):
                     client_socket.sendall(cur_command.encode())
 
                     # read joint positions until they equal target joint positions
-                    start = time.time()
                     while True:
                         new_message = client_socket.recv(4096)
+                        if not new_message:
+                            self.log.Error("Failed to receive message. Error: {}".format(socket.error))
+                            break
                         new_package = Package(new_message)
                         subpackage = new_package.get_subpackage("Joint Data")
                         if subpackage is not None:
@@ -138,10 +137,6 @@ class UR3e(Instrument):
                             if actual_pos_list == target_pos_list:
                                 self.log.Info("Target position " + str(target_pos_list) + " reached")
                                 break
-
-                        if (time.time() - start) > 10: # allow 10 seconds before timeout
-                            self.log.Info("Request timed out")
-                            break
 
             except socket.error as e:
                 self.log.Error("Send command failed. Error: {}".format(e))
