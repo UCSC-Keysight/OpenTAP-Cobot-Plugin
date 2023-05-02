@@ -7,7 +7,5 @@
       <Name Metadata="Step Name">Move Cobot</Name>
     </TestStep>
   </Steps>
-  <Package.Dependencies>
-    <Package Name="OpenTAP" Version="^9.19.4+7959a308" />
-  </Package.Dependencies>
+  <Package.Dependencies />
 </TestPlan>
