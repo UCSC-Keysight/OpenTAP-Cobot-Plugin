@@ -6,22 +6,63 @@
 - These plugins are loosely being designed to potentially extend to other cobots in the future.
 - The immediate purpose of these plugins will tentatively be used in 6G testing as described [here](https://gist.github.com/Shawn-Armstrong/8018e24419fa095ff15e1e2458042c8a).
 
-## Usage
-- End-user uses OpenTAP plugin to send move commands to the cobot. 
-    
- <kbd>![usage](https://user-images.githubusercontent.com/80125540/224439881-c21aa793-5173-42e4-9a26-bb517041b3e3.gif)</kbd>
+### Demo
+- End-user uses OpenTAP to send move commands to the cobot using this plugin. 
+      
+  <kbd>![usage](https://user-images.githubusercontent.com/80125540/224439881-c21aa793-5173-42e4-9a26-bb517041b3e3.gif)</kbd>
+ 
+## Packaging Plugin
 
-## Setup
+### Details
+A package is a technique used to compress a plugin into a single file with a `.TapPackage` extension, which simplifies the installation and setup process for operators.
+
+### Creating Package
+- This plugin can be compressed into a package with the following steps:
+    
+  ```Console
+  git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git
+  cd OpenTAP-Cobot-Plugin/openTap
+  dotnet build
+  bin\tap package create ./package.xml
+  ```
+
+### Installing Package Manually
+- Operators can install a package into an existing OpenTAP installation with the following commands:
+    
+  ```Console
+  # Navigate to the root directory of an existing OpenTAP installation.
+  tap package install <PATH-TO-PACKAGE-FILE>
+  ```
+  
+## Developer Setup
+
+### Overview 
+The following instructions are intended for programmers to continue development for the plugin.
 
 ### Requirements
-
 - [Python3](https://www.python.org/downloads/)
 - [Git](https://git-scm.com/downloads)
 - [Docker](https://docs.docker.com/get-docker/)
 - [.NET SDK](https://aka.ms/dotnet-download)
 - [Google Chrome](https://www.google.com/chrome/)
 
+### Local Setup
+- The plugin can be developed locally using the following commands:
+
+  ```Console
+  # Starts Universal Robots' Simulator
+  docker network create --subnet=192.168.56.0/24 ursim_net
+  docker run -it -e ROBOT_MODEL=UR3e --net ursim_net --ip 192.168.56.101 -p 30002:30002 -p 30004:30004 -p 6080:6080 --name ur3e_container universalrobots/ursim_e-series
+  
+  # Setups plugin and launches editor
+  git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git 
+  cd OpenTAP-Cobot-Plugin/openTap
+  dotnet build
+  bin\tap editor
+  ```
+
 ### Docker Setup (runall.sh)
+The plugin can be developed using a container with the following resources: 
 <pre>
 
 runall.sh script manual page
@@ -44,69 +85,20 @@ after the initial build all further use is cached and instant.
 All environmental variables and imported code is stored via volume mounts and do not interfere with the image itself, but store persistent state.
 </pre>
 
-### Instructions
-
-1. Start the UR3e simulator container by opening a console and running the following commands:
-     
-   ```Console
-   docker network create --subnet=192.168.56.0/24 ursim_net
-   docker run -it -e ROBOT_MODEL=UR3e --net ursim_net --ip 192.168.56.101 -p 30002:30002 -p 30004:30004 -p 6080:6080 --name ur3e_container universalrobots/ursim_e-series
-   ``` 
-2. Start the cobot by visiting http://localhost:6080/vnc_auto.html using Google Chrome and performing the following actions:
-     
-   <kbd>![start_cobot](https://user-images.githubusercontent.com/80125540/224440933-3e993623-81e5-48c1-9858-8629fe25f684.gif)</kbd>
-
-3. Clone this repository in a directory of your choosing then navigate inside its root directory with the following commands:
-     
-   ```Console
-   git clone https://github.com/UCSC-Keysight/OpenTAP-Cobot-Plugin.git
-   cd OpenTAP-Cobot-Plugin
-   ```
-4. Perform the following build procedure inside the root directory; this will create the plugin using the current implementation files and open the editor for testing.
-   ````Console
-   dotnet build
-   bin\tap editor
-   ````
-5. Test the built plugin using the editor with the following actions:
-   - In the OpenTAP editor, click the + icon to add a new test step.
-   - In the Pop-up test step window, select UR Prototype > Move Cobot > Add.
-   - At the bottom of the window, right click the UR3e instrument, click Configure, and set the IP address as your host network's IPv4 address.
-     - As an example, this can be identified on a Windows machine using a console running the command `ipconfig`; it should look something like this:
-         
-       ![image](https://user-images.githubusercontent.com/80125540/224469661-a78df69b-9ec3-408f-9578-e0a206b92601.png)
-   - Click the green play button to run the test plan, and watch the UR3e move.
-     
-   <kbd>![step4](https://user-images.githubusercontent.com/80125540/224439495-be4a2be1-a2d2-48fb-b36e-d018a18b1af1.gif)</kbd>
-
-### Setup Summary
-- This setup is intended to provide a developing environment for plugin developers using OpenTAP's boilerplate for Python projects.
-- The `bin` directory is a standalone OpenTAP installation used for streamlined testing. 
-- The setup intends for developers to make changes to the implementation files then run `dotnet build` to apply the changes then `bin\tap` to test them in the editor. 
-- This setup is preferred because the `.csproj` and `.sln` files assist in managing dependencies during the build process.
-- This setup is not intended to be used by customers. Instead, developers will use it to produce a `.TapPackage` outlined in the Packaging section of the document. This package will one day be added to Keysight's package manager so a customer may access it by using `tap package install ur3e`
-   
-## Packaging
-
-### Creating Package
-- This plugin can be compressed into a package after build, if desired, by running the following command:
+### Details
+- The PolyScope interface can be accessed by navigating to [http://localhost:6080/vnc_auto.html](http://localhost:6080/vnc_auto.html) on Google Chrome.
     
-    ```
-    bin\tap package create ./package.xml
-    ``` 
-### Installing Package Manually
-- The `.TapPackage` can be installed into an actual OpenTAP installation by navigating to the OpenTAP root directory inside a console and running the following command:
-    
-     ```Console
-     tap package install <path-to-.TapPackage-file>
-     ```
-
-### Installing Package with Package Manager
-- **In the future**, a package will be added to Keysight's package manager which can be installed by navigating to the OpenTAP root directory inside a console and running the following command:
-    
-  ```Console
-  tap package install ur3e
-  ```
+  <kbd>![start_cobot](https://user-images.githubusercontent.com/80125540/224440933-3e993623-81e5-48c1-9858-8629fe25f684.gif)</kbd>
   
+- The existing plugin can be tested with the following steps:
+    
+  <kbd>![step4](https://user-images.githubusercontent.com/80125540/224439495-be4a2be1-a2d2-48fb-b36e-d018a18b1af1.gif)</kbd>
+     
+  - Your host machine's IPv4 should be used within the UR3e IP Address field.
+      
+    ![image](https://user-images.githubusercontent.com/80125540/224469661-a78df69b-9ec3-408f-9578-e0a206b92601.png)
+
+
 ## Technical Details
 
 ### OpenTAP Infrastructure
@@ -141,3 +133,4 @@ The prototype only uses an instrument named `UR3e` and a test step `MoveCobot`.
 - Creates a TCP socket connection.
 - Sends requests to UR3e simulator's internal server.
 - Receives response back from UR3e simulator's internal server.
+
