@@ -17,6 +17,8 @@ class UR3e(Instrument):
     
     ip_address = property(String, "192.168.56.101")\
         .add_attribute(OpenTap.Display("IP Address", "The static IP address of the UR3e cobot."))
+    
+    command = "movej"
 
     def __init__(self):
         super(UR3e, self).__init__()
@@ -28,6 +30,8 @@ class UR3e(Instrument):
         self.initial_position_command = ""
         self.InputValue = Input[String]()
 
+    def set_command(self, comm):
+        self.command = comm
 
     def connect_to_cobot(self) -> socket.socket:
         """
@@ -251,7 +255,7 @@ class UR3e(Instrument):
         """
 
         self.joint_values[index] += 0.1
-        seek_command = f"movej({self.joint_values}, v=1.0, a=1.0)\n"
+        seek_command = self.command + f"({self.joint_values}, v=1.0, a=1.0)\n"
         print(seek_command)
         self.send_request_movement(seek_command)
 
@@ -266,7 +270,7 @@ class UR3e(Instrument):
 
         self.joint_values[index] -= 0.1
         print(self.joint_values)
-        seek_command = f"movej({self.joint_values}, v=1.0, a=1.0)\n"
+        seek_command = self.command + f"({self.joint_values}, v=1.0, a=1.0)\n"
         print(seek_command)
         self.send_request_movement(seek_command)
 
@@ -280,8 +284,8 @@ class UR3e(Instrument):
             initial (list): The initial position of the cobot.
         """
 
-        self.target_position_command = f"movej({self.joint_values}, v=1.0, a=1.0)\n"
-        initial_position_command = f"movej({self.initial_position}, v=1.0, a=1.0)\n"
+        self.target_position_command = self.command + f"({self.joint_values}, v=1.0, a=1.0)\n"
+        initial_position_command = self.command + f"({self.initial_position}, v=1.0, a=1.0)\n"
         print(f"Initial: {initial_position_command}, target:{self.target_position_command}")
 
         # Potential bug:
