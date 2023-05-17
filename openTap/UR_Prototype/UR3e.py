@@ -69,17 +69,13 @@ class UR3e(Instrument):
                 self.log.Error("Send command failed. Error: {}".format(e))
                 return None
 
-        if response:
-            # Not sure how to deserialize response.
-            # Nothing in documentation about its encoding.
-            # https://forum.universal-robots.com/t/how-do-i-deserialize-response-messages-from-the-controller/26537
-            self.log.Warning("This response is serialized.")
+        if new_message:
             client_socket.close()
-            return new_package
+            return True
         else:
             self.log.Error("No response message received.")
             client_socket.close()
-            return None
+            return False
 
     def send_request_from_file(self, file_path):
 
