@@ -38,7 +38,8 @@ class MoveCobot(TestStep):
         self.Commands = List[String]()
         self.Commands.Add("Joint")
         self.Commands.Add("Linear")
-
+        self.Commands.Add("Circular")
+        self.Commands.Add("Blend")
 
     def Run(self):
         super().Run()
@@ -46,6 +47,10 @@ class MoveCobot(TestStep):
         if self.Mode == "Seek Mode":
             if self.C_Choice == "Linear":
                 self.ur3e_cobot.set_command("movel")
+            elif self.C_Choice == "Circular":
+                self.ur3e_cobot.set_command("movec")
+            elif self.C_Choice == "Blend":
+                self.ur3e_cobot.set_command("movep")
             self.command = self.ur3e_cobot.seek_target_position()
 
         # Sends move command to cobot.
