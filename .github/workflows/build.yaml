@@ -60,4 +60,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build
-        run: python ./UR_Prototype/tests/UR3e_test.py
+        run: python .openTap/UR_Prototype/tests/UR3e_test.py
