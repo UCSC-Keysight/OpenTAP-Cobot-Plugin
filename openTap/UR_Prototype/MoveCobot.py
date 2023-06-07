@@ -22,6 +22,11 @@ class MoveCobot(TestStep):
         .add_attribute(OpenTap.Display("Mode", "Values from Available Values can be selected here.", "Mode"))
     Available = property(List[String], None)\
         .add_attribute(OpenTap.Display("Available Values", "Select which values are available for 'Mode'.", "Mode"))
+    C_Choice = property(String, "Joint")\
+        .add_attribute(OpenTap.AvailableValues("Commands"))\
+        .add_attribute(OpenTap.Display("Movement Choices", "Values from Command choices can be selected here.", "Movement Choices"))
+    Commands = property(List[String], None)\
+        .add_attribute(OpenTap.Display("Movements", "Select how you want to move the cobot.", "Movements"))
 
 
     def __init__(self):
@@ -30,12 +35,22 @@ class MoveCobot(TestStep):
         self.Available = List[String]()
         self.Available.Add("Seek Mode")
         self.Available.Add("URScript Mode")
-
+        self.Commands = List[String]()
+        self.Commands.Add("Joint")
+        self.Commands.Add("Linear")
+        self.Commands.Add("Circular")
+        self.Commands.Add("Blend")
 
     def Run(self):
         super().Run()
         
         if self.Mode == "Seek Mode":
+            if self.C_Choice == "Linear":
+                self.ur3e_cobot.set_command("movel")
+            elif self.C_Choice == "Circular":
+                self.ur3e_cobot.set_command("movec")
+            elif self.C_Choice == "Blend":
+                self.ur3e_cobot.set_command("movep")
             self.command = self.ur3e_cobot.seek_target_position()
 
         # Sends move command to cobot.
