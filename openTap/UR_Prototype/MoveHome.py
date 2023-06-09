@@ -31,9 +31,9 @@ class MoveCobot(TestStep):
         super().Run()
 
         # Send the command to UR3e Instrument abstraction.
-        response_received = self.ur3e_cobot.send_request_movement(self.command)
+        response_package = self.ur3e_cobot.send_request_movement(self.command)
 
-        if response_received == True:
+        if response_package != None:
             self.log.Info("URScript received by cobot controller.\n")
             self.UpgradeVerdict(OpenTap.Verdict.Pass)
         else:

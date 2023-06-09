@@ -69,13 +69,13 @@ class UR3e(Instrument):
                 self.log.Error("Send command failed. Error: {}".format(e))
                 return None
 
-        if new_message:
+        if new_package:
             client_socket.close()
-            return True
+            return new_package
         else:
             self.log.Error("No response message received.")
             client_socket.close()
-            return False
+            return None
 
     def send_request_from_file(self, file_path):
 
