@@ -50,15 +50,23 @@ class UR3e(Instrument):
                         self.log.Error("Failed to receive message. Error: {}".format(socket.error))
                         break
                     new_package = Package(new_message)
-                    subpackage = new_package.get_subpackage("Joint Data")
-                    if subpackage is not None:
+                    # check if robot entered protective stop mode
+                    robot_mode_data = new_package.get_subpackage("Robot Mode Data")
+                    if robot_mode_data is not None:
+                        protective_stop = robot_mode_data.subpackage_variables.isProtectiveStopped
+                        if protective_stop:
+                            self.log.Error("ERROR: UR3e entered protective stop mode")
+                            return None
+                    # compare target position with current position
+                    joint_data = new_package.get_subpackage("Joint Data")
+                    if joint_data is not None:
                         actual_pos_list = [
-                            subpackage.subpackage_variables.Joint1_q_actual,
-                            subpackage.subpackage_variables.Joint2_q_actual,
-                            subpackage.subpackage_variables.Joint3_q_actual,
-                            subpackage.subpackage_variables.Joint4_q_actual,
-                            subpackage.subpackage_variables.Joint5_q_actual,
-                            subpackage.subpackage_variables.Joint6_q_actual
+                            joint_data.subpackage_variables.Joint1_q_actual,
+                            joint_data.subpackage_variables.Joint2_q_actual,
+                            joint_data.subpackage_variables.Joint3_q_actual,
+                            joint_data.subpackage_variables.Joint4_q_actual,
+                            joint_data.subpackage_variables.Joint5_q_actual,
+                            joint_data.subpackage_variables.Joint6_q_actual
                         ]
                         actual_pos_list = [round(i, 5) for i in actual_pos_list]
                         if actual_pos_list == target_pos_list:
@@ -119,15 +127,22 @@ class UR3e(Instrument):
                             self.log.Error("Failed to receive message. Error: {}".format(socket.error))
                             break
                         new_package = Package(new_message)
-                        subpackage = new_package.get_subpackage("Joint Data")
-                        if subpackage is not None:
+                        # check if robot entered protective stop mode
+                        robot_mode_data = new_package.get_subpackage("Robot Mode Data")
+                        if robot_mode_data is not None:
+                            protective_stop = robot_mode_data.subpackage_variables.isProtectiveStopped
+                            if protective_stop:
+                                self.log.Error("ERROR: UR3e entered protective stop mode")
+                                return False
+                        joint_data = new_package.get_subpackage("Joint Data")
+                        if joint_data is not None:
                             actual_pos_list = [
-                                subpackage.subpackage_variables.Joint1_q_actual,
-                                subpackage.subpackage_variables.Joint2_q_actual,
-                                subpackage.subpackage_variables.Joint3_q_actual,
-                                subpackage.subpackage_variables.Joint4_q_actual,
-                                subpackage.subpackage_variables.Joint5_q_actual,
-                                subpackage.subpackage_variables.Joint6_q_actual
+                                joint_data.subpackage_variables.Joint1_q_actual,
+                                joint_data.subpackage_variables.Joint2_q_actual,
+                                joint_data.subpackage_variables.Joint3_q_actual,
+                                joint_data.subpackage_variables.Joint4_q_actual,
+                                joint_data.subpackage_variables.Joint5_q_actual,
+                                joint_data.subpackage_variables.Joint6_q_actual
                             ]
                             actual_pos_list = [round(i, 5) for i in actual_pos_list]
                             if actual_pos_list == target_pos_list:
@@ -175,15 +190,15 @@ class UR3e(Instrument):
                     self.log.Error("Failed to receive message. Error: {}".format(socket.error))
                     break
                 new_package = Package(new_message)
-                subpackage = new_package.get_subpackage("Joint Data")
-                if subpackage is not None:
+                joint_data = new_package.get_subpackage("Joint Data")
+                if joint_data is not None:
                     actual_pos_list = [
-                        subpackage.subpackage_variables.Joint1_q_actual,
-                        subpackage.subpackage_variables.Joint2_q_actual,
-                        subpackage.subpackage_variables.Joint3_q_actual,
-                        subpackage.subpackage_variables.Joint4_q_actual,
-                        subpackage.subpackage_variables.Joint5_q_actual,
-                        subpackage.subpackage_variables.Joint6_q_actual
+                        joint_data.subpackage_variables.Joint1_q_actual,
+                        joint_data.subpackage_variables.Joint2_q_actual,
+                        joint_data.subpackage_variables.Joint3_q_actual,
+                        joint_data.subpackage_variables.Joint4_q_actual,
+                        joint_data.subpackage_variables.Joint5_q_actual,
+                        joint_data.subpackage_variables.Joint6_q_actual
                     ]
                     actual_pos_list = [round(i, 5) for i in actual_pos_list]
                     return actual_pos_list
