@@ -211,7 +211,7 @@ class UR3e(Instrument):
         # Create the main window
         root = tk.Tk()
         root.title("Modify Joint Values")
-        root.geometry("300x300")
+        root.geometry("400x300")
         root.resizable(True, True)
 
         # Create a frame to hold the buttons
@@ -227,6 +227,9 @@ class UR3e(Instrument):
         joint_names = ["Base", "Shoulder", "Elbow", "Wrist 1", "Wrist 2", "Wrist 3"]
 
         # Create the joint value controls
+        self.joint_entries = []  # To keep track of the entries
+
+        # Create the joint value controls
         for idx, joint_name in enumerate(joint_names):
             label = tk.Label(button_frame, text=joint_name)
             label.grid(row=idx, column=0, padx=(10, 0), pady=(10, 0), sticky='w')
@@ -236,6 +239,17 @@ class UR3e(Instrument):
 
             plus_button = tk.Button(button_frame, text="+", command=lambda idx=idx: self.increment_joint(idx), width=5, height=1, bg=button_bg, fg=button_fg, relief=button_relief)
             plus_button.grid(row=idx, column=2, padx=(5, 10), pady=(10, 0))
+
+            # Add an Entry to input the state of the joint, input formatted to 6 sigfigs
+            formatted_joint_value = "{:.6f}".format(self.joint_values[idx])
+            state_entry = tk.Entry(button_frame)
+            state_entry.insert(0, formatted_joint_value)  # Insert the initial value
+            state_entry.grid(row=idx, column=3, padx=(10, 0), pady=(10, 0), sticky='w')
+
+            # Bind a function to the <Return> event
+            state_entry.bind('<Return>', lambda event, idx=idx: self.update_joint_from_entry(idx))
+
+            self.joint_entries.append(state_entry)  # Store the entry
 
         # Create the Capture button
         capture_button = tk.Button(button_frame, text="Capture", command=lambda: self.capture(root), width=10, height=2, bg=button_bg, fg=button_fg, relief=button_relief)
@@ -259,6 +273,12 @@ class UR3e(Instrument):
         print(seek_command)
         self.send_request_movement(seek_command)
 
+        # Update the entry for this joint
+        formatted_joint_value = "{:.6f}".format(self.joint_values[index])
+        self.joint_entries[index].delete(0, tk.END) 
+        self.joint_entries[index].insert(0, formatted_joint_value) 
+
+
 
     def decrement_joint(self, index):
         """
@@ -273,6 +293,32 @@ class UR3e(Instrument):
         seek_command = self.command + f"({self.joint_values}, v=1.0, a=1.0)\n"
         print(seek_command)
         self.send_request_movement(seek_command)
+
+        # Update the entry for this joint
+        formatted_joint_value = "{:.6f}".format(self.joint_values[index])
+        self.joint_entries[index].delete(0, tk.END)  
+        self.joint_entries[index].insert(0, formatted_joint_value)  
+
+    def update_joint_from_entry(self, index):
+        """
+        Updates the joint value at the given index with the value entered in the corresponding Entry widget and sends the updated joint positions to the cobot.
+
+        Args:
+            index (int): The index of the joint value to update.
+        """
+
+        # Get the text from the Entry widget and convert it to a float
+        try:
+            new_value = float(self.joint_entries[index].get())
+        except ValueError:
+            print(f"Invalid input: {self.joint_entries[index].get()}")
+            return
+
+        self.joint_values[index] = new_value
+        seek_command = f"movej({self.joint_values}, v=1.0, a=1.0)\n"
+        print(seek_command)
+        self.send_request_movement(seek_command)
+
 
 
     def capture(self, root):
