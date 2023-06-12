@@ -24,7 +24,8 @@ RUN apt-get install -y \
     fluxbox \
     libnss3 \
     libgbm1 \
-    libgtk-3-0
+    libgtk-3-0 \
+    python3-tk
 RUN useradd -m -s /bin/bash keysight
 RUN echo keysight:keysight | chpasswd
 RUN usermod -a -G sudo keysight

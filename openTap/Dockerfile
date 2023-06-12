@@ -1,4 +1,4 @@
-FROM opentapio/opentap:latest
+FROM opentapio/opentap:9.19.5-bionic-slim
 
 ARG OUTPUT
 ARG FILES
@@ -11,9 +11,10 @@ RUN echo "Installing necessary dependencies..."
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
-    vim
+    vim \
+    python3-tk
 RUN pip install tabulate
- 
+
 RUN echo "Installing OpenTAP packages..."
 RUN tap package install Python
 
