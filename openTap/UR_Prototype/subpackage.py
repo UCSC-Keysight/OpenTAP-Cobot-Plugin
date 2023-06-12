@@ -1,7 +1,7 @@
 import struct
 from datetime import timedelta
 from collections import namedtuple
-from tabulate import tabulate
+# from tabulate import tabulate
 
 class SubPackage:
     def __init__(self, package_type, subpackage_data, subpackage_length, subpackage_type):
