@@ -13,6 +13,24 @@ class UR3e(Instrument):
         super(UR3e, self).__init__()
         self.Name = "UR3e"
 
+    def connect_to_cobot(self) -> socket.socket:
+        """
+        Connects to the UR3e2 cobot using its IP address and port number.
+
+        Returns:
+            socket.socket: A socket object representing the connection to the cobot, or None if the connection failed.
+        """
+        HOST = self.ip_address
+        PORT = 30002
+        try:
+            connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            connection.settimeout(4)
+            self.log.Info(f"Connecting with {self.ip_address}:{PORT}")
+            connection.connect((HOST, PORT))
+            return connection
+        except (socket.timeout, socket.error) as e:
+            self.log.Error(f"Could not connect to {HOST}:{PORT}. Error: {e}")
+            return None
     @method(Double)
     
     # DESCRIPTION:    Open socket, connect to cobot, send move command and wait until 
