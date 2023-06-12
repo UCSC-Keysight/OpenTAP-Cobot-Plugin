@@ -91,12 +91,6 @@ then
     g='--build-arg GUI='$gui_set
 fi
 
-# # if [ -d "$output_set" ]
-# # then
-# #     echo "Output is set to: " $output
-# #     echo "Output is not currently implemented."
-# # fi
-# #End of Flag Check
 
 echo 'Beginning build...'
 echo 'Checking Docker Hub for Images..'
@@ -111,6 +105,8 @@ else
     eval "$build"
     cd ..
 fi
+
+#Force Build & Pulling Image Evaluation
 
 if [ ! $build_set ] && [ $gui_set ] && [ "$(docker manifest inspect ucsckeysight/opentapflux:latest > /dev/null ; $? 2>&1)" ];
 then
@@ -135,6 +131,11 @@ else
     eval "$build"
     cd ..
 fi
+
+#End Of Force Build & Pulling Image Evaluation
+
+
+#Network Instantiation
 
 echo 'Running Containers...'
 tap_dir=$(get_abs_filename './openTap')
@@ -181,10 +182,14 @@ then
     docker-compose run --rm -e LM_LICENSE_FILE=@$license_server openTapController /bin/bash
 fi
 
-if [ ! $interactive_shell_set ] && [ ! $gui_set ] && [ "$file_set" ] || [ "$dir_set" ];
+if [ ! $interactive_shell_set ] && [ ! $gui_set ] && ( [ "$file_set" ] || [ "$dir_set" ] );
 then
     docker-compose run --rm openTapController ./scripts/runTestPlans.sh
 fi
+
+#End of Network Instantiation
+
+#Cleanup leftover containers and network
 
 printf 'Removing Docker Network\n'
 rm -rf openTap/.resources/testPlans/

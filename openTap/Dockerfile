@@ -1,4 +1,4 @@
-FROM opentapio/opentap:9.19.5-bionic-slim
+FROM opentapio/opentap:latest
 
 ARG OUTPUT
 ARG FILES
