@@ -39,14 +39,6 @@ class UR3e(Instrument):
         Returns:
             socket.socket: A socket object representing the connection to the cobot, or None if the connection failed.
         """
-    @method(Double)
-    
-    # DESCRIPTION:    Open socket, connect to cobot, send move command and wait until 
-    #                 cobot response indicates target position has been reached. 
-    # RETURNS:        The response package from the cobot on successful completion. 
-    #                 None if there was no response from the cobot. 
-    def send_request_movement(self, command):
-
         HOST = self.ip_address
         PORT = 30002
         try:
@@ -58,6 +50,17 @@ class UR3e(Instrument):
         except (socket.timeout, socket.error) as e:
             self.log.Error(f"Could not connect to {HOST}:{PORT}. Error: {e}")
             return None
+    @method(Double)
+    
+    # DESCRIPTION:    Open socket, connect to cobot, send move command and wait until 
+    #                 cobot response indicates target position has been reached. 
+    # RETURNS:        The response package from the cobot on successful completion. 
+    #                 None if there was no response from the cobot. 
+    def send_request_movement(self, command):
+
+        HOST = self.ip_address
+        PORT = 30002
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
             client_socket.settimeout(4)
 
@@ -418,6 +421,13 @@ class UR3e(Instrument):
     # RETURNS:        True if response from cobot indicates successful completion. False if 
     #                 no response. 
     def send_request_from_file(self, file_path):
+
+        HOST = self.ip_address
+        PORT = 30002
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+            client_socket.settimeout(4)
+
             self.log.Info("Connecting with {}:{}".format(self.ip_address, PORT))
             try:
                 client_socket.connect((HOST, PORT))
