@@ -101,7 +101,7 @@ then
 else
     cd openTap
     echo 'Building openTap...'
-    build="docker build -t ucsckeysight/opentap:latest $f $g . > /dev/null"
+    build="docker build -t ucsckeysight/opentap:latest $f $g -f Dockerfile . > /dev/null"
     eval "$build"
     cd ..
 fi
