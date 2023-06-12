@@ -2,12 +2,12 @@ import OpenTap
 from OpenTap import Log, DisplayAttribute, Display, Output, Unit, OutputAttribute, UnitAttribute, AvailableValues, EnabledIfAttribute
 from opentap import *
 from .UR3e import UR3e
-from System import String, Array, IConvertible
+from System import String, Array, IConvertible, Int32
 from System.Collections.Generic import List
 import clr
+from enum import Enum
 
 clr.AddReference("System.Collections")
-
 
 @attribute(OpenTap.Display("Move Cobot", "Moves UR3e cobot to the specified location", "UR_Prototype"))
 class MoveCobot(TestStep):
@@ -16,14 +16,42 @@ class MoveCobot(TestStep):
         add_attribute(OpenTap.Display("Instrument", "The instrument to use in the step.", "Resources"))
     command = property(String, "movej([0, 0, 0, 0, 0, 0], a=1.2, v=1.05)")\
         .add_attribute(Display("command", "This move command gets sent to the UR Cobot", "UR Script", -1, True))
+    
+    Mode = property(String, "Seek Mode")\
+        .add_attribute(OpenTap.AvailableValues("Available"))\
+        .add_attribute(OpenTap.Display("Mode", "Values from Available Values can be selected here.", "Mode"))
+    Available = property(List[String], None)\
+        .add_attribute(OpenTap.Display("Available Values", "Select which values are available for 'Mode'.", "Mode"))
+    C_Choice = property(String, "Joint")\
+        .add_attribute(OpenTap.AvailableValues("Commands"))\
+        .add_attribute(OpenTap.Display("Movement Choices", "Values from Command choices can be selected here.", "Movement Choices"))
+    Commands = property(List[String], None)\
+        .add_attribute(OpenTap.Display("Movements", "Select how you want to move the cobot.", "Movements"))
+
 
     def __init__(self):
         super(MoveCobot, self).__init__()
         self.Logging = OpenTap.Enabled[String]()
-
+        self.Available = List[String]()
+        self.Available.Add("Seek Mode")
+        self.Available.Add("URScript Mode")
+        self.Commands = List[String]()
+        self.Commands.Add("Joint")
+        self.Commands.Add("Linear")
+        self.Commands.Add("Circular")
+        self.Commands.Add("Blend")
 
     def Run(self):
         super().Run()
+        
+        if self.Mode == "Seek Mode":
+            if self.C_Choice == "Linear":
+                self.ur3e_cobot.set_command("movel")
+            elif self.C_Choice == "Circular":
+                self.ur3e_cobot.set_command("movec")
+            elif self.C_Choice == "Blend":
+                self.ur3e_cobot.set_command("movep")
+            self.command = self.ur3e_cobot.seek_target_position()
 
         # Sends move command to cobot.
         response_package = self.ur3e_cobot.send_request_movement(self.command)
