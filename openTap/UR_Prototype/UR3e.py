@@ -14,6 +14,11 @@ class UR3e(Instrument):
         self.Name = "UR3e"
 
     @method(Double)
+    
+    # DESCRIPTION:    Open socket, connect to cobot, send move command and wait until 
+    #                 cobot response indicates target position has been reached. 
+    # RETURNS:        The response package from the cobot on successful completion. 
+    #                 None if there was no response from the cobot. 
     def send_request_movement(self, command):
 
         HOST = self.ip_address
@@ -85,6 +90,12 @@ class UR3e(Instrument):
             client_socket.close()
             return None
 
+
+    # DESCRIPTION:    Open socket, connect to cobot, open file, send move commands from each
+    #                 line of file to the cobot. Move onto the next move command when target 
+    #                 position is reached.
+    # RETURNS:        True if response from cobot indicates successful completion. False if 
+    #                 no response. 
     def send_request_from_file(self, file_path):
 
         HOST = self.ip_address
@@ -134,6 +145,7 @@ class UR3e(Instrument):
                             if protective_stop:
                                 self.log.Error("ERROR: UR3e entered protective stop mode")
                                 return False
+                        # compare target position with current position
                         joint_data = new_package.get_subpackage("Joint Data")
                         if joint_data is not None:
                             actual_pos_list = [
@@ -163,9 +175,8 @@ class UR3e(Instrument):
         
 
     # DESCRIPTION:    Open socket, connect to cobot, read message stream from cobot
-    #                 until it recieves joint state data or 3 seconds have passed.
-    # RETURNS:        List of joint state data if recieved, False if no joint data was
-    #                 recieved after 3 seconds. 
+    #                 until it recieves joint state data.
+    # RETURNS:        List of joint state data
     def get_joint_state(self):
         HOST = self.ip_address
         PORT = 30002

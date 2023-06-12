@@ -37,7 +37,7 @@ def test_connection(address, PORT):
 
 
 if __name__=='__main__':
-    # get address
+    # get address from command line
     if "-ip" in sys.argv:
         address = sys.argv[sys.argv.index("-ip") + 1]
     else:

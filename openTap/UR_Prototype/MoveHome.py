@@ -19,6 +19,7 @@ class MoveCobot(TestStep):
     ur3e_cobot = property(UR3e, None).\
         add_attribute(OpenTap.Display(
             "Instrument", "The instrument to use in the step.", "Resources"))
+    # default command contains the joint positions of the UR3e simulator on startup
     command = property(String, "movej([-1.6007, -1.7271, -2.203, -0.808, 1.5951, -0.031], a=1.2, v=1.05)")\
         .add_attribute(Display("command", "This move command gets sent to the UR Cobot", "UR Script", -1, True))
 
