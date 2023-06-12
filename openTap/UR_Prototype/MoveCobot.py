@@ -55,6 +55,9 @@ class MoveCobot(TestStep):
 
         # Sends move command to cobot.
         response_package = self.ur3e_cobot.send_request_movement(self.command)
+        if response_package is None:    
+            self.UpgradeVerdict(OpenTap.Verdict.Fail)
+            return
 
         robot_state_message = 16
         if response_package.type == robot_state_message:
